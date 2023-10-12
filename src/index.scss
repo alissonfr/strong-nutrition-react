@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+    @apply box-border
+}
+
+html, body {
+    @apply m-0 p-0 h-screen;
+}
+
+body {
+    @apply font-inter bg-body-bg;
+}
+
+::-webkit-scrollbar {
+    @apply w-1.5 h-1.5 rounded-md bg-gray-400;
+}
+
+::-webkit-scrollbar-thumb {
+    @apply rounded-md bg-gray-700;
+}

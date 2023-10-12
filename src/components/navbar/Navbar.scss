@@ -1,0 +1,11 @@
+.header {
+    @apply bg-primary flex items-center justify-between p-5 text-white text-sm;
+
+    section {
+        @apply flex items-center justify-center gap-3;
+
+        span {
+            @apply mr-4;
+        }
+    }
+}
