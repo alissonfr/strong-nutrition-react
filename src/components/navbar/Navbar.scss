@@ -1,11 +1,22 @@
+@import "../../assets/theme/_colors.scss";
+
 .header {
-    @apply bg-primary flex items-center justify-between p-5 text-white text-sm;
+    background-color: $primary;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    color: #FFF;
+    font-size: 14px;
 
     section {
-        @apply flex items-center justify-center gap-3;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
 
         span {
-            @apply mr-4;
+            margin-right: 16px;
         }
     }
 }
