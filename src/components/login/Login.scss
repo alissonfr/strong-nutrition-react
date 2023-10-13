@@ -1,0 +1,70 @@
+@import "../../assets/theme/_colors.scss";
+
+.login {
+    height: 100vh;
+    display: flex;
+    flex-wrap: nowrap;
+    
+    
+    section.left {
+        width: 60vw;
+        background-image: url("../../assets/bg.jpg");
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        background-color: #000;
+    }
+    
+    section.right {
+        width: 40vw;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 0 75px;
+        background-color: #FFF;
+    
+        .form-wrapper {
+            width: 100%;
+            padding: 72px 80px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid $gray-200;
+            position: relative;
+
+            .border {
+                position: absolute;
+                border-radius: 12px 12px 0 0;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 8px;
+                background-color: $green-logo;
+            }
+
+            img {
+                height: 75px;
+                margin-bottom: 0spx;
+            }
+
+            h2 {
+                font-weight: 400;
+                font-size: 14px;
+                color: $gray-400;
+            }
+            
+            form {
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+                margin-top: 32px;
+            }
+
+            .button {
+                width: 100%;
+                margin-top: 16px;
+            }
+        }
+    }
+}
+

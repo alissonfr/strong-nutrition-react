@@ -19,17 +19,17 @@ export const Sidenav: React.FC<SidenavProps> = ({ children }) => {
                         Página inicial
                     </div>
                     <div className="item">
-                        <div className="bar"></div>
+                        <div className=""></div>
                         <i><AttachMoneyIcon/></i>
                         Caixa
                     </div>
                     <div className="item">
-                        <div className="bar"></div>
+                        <div className=""></div>
                         <i><BarChartIcon/></i>
                         Vendas
                     </div>
                     <div className="item">
-                        <div className="bar"></div>
+                        <div className=""></div>
                         <i><CreateNewFolderIcon/></i>
                         Cadastros
                     </div>
