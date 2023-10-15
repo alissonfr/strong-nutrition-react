@@ -6,9 +6,10 @@ import { Input } from './components/input/Input';
 import { Button } from './components/button/Button';
 import LogoDark from './../../assets/logo-dark.png'
 
+
 const loginSchema = yup.object().shape({
-  email: yup.string().email().required(),
-  password: yup.string().required().min(5),
+  email: yup.string().email('Digite um endereço de email válido').required('O email é obrigatório'),
+  password: yup.string().required('A senha é obrigatória').min(5, 'A senha deve ter pelo menos 5 caracteres'),
 });
 
 interface LoginProps {
@@ -16,7 +17,6 @@ interface LoginProps {
 }
 export const Login: React.FC<LoginProps> = ({ children }) => {
   const { isAuthenticated, login } = useAuthContext();
-
   const [isLoading, setIsLoading] = useState(false);
 
   const [passwordError, setPasswordError] = useState('');
@@ -24,21 +24,15 @@ export const Login: React.FC<LoginProps> = ({ children }) => {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
 
-
   const handleSubmit = () => {
     setIsLoading(true);
-
+    
     loginSchema
-      .validate({ email, password }, { abortEarly: false })
-      .then(dadosValidados => {
-        login(dadosValidados.email, dadosValidados.password)
-          .then(() => {
-            setIsLoading(false);
-          });
-      })
+    .validate({ email, password }, { abortEarly: false })
+    .then(data => { 
+      login(data.email, data.password).finally(() => setIsLoading(false));
+       })
       .catch((errors: yup.ValidationError) => {
-        setIsLoading(false);
-
         errors.inner.forEach(error => {
           if (error.path === 'email') {
             setEmailError(error.message);
@@ -46,7 +40,7 @@ export const Login: React.FC<LoginProps> = ({ children }) => {
             setPasswordError(error.message);
           }
         });
-      });
+      }).finally(() => setIsLoading(false))
   };
 
   if (isAuthenticated) return (
@@ -86,12 +80,12 @@ export const Login: React.FC<LoginProps> = ({ children }) => {
             />
             <div className="button">
               <Button
-                variant="contained"
                 disabled={isLoading}
                 onClick={handleSubmit}>
                 Entrar
               </Button>
             </div>
+
           </form>
         </div>
       </section>

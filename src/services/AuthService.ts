@@ -4,18 +4,8 @@ interface Auth {
   token: string;
 }
 
-const auth = async (email: string, password: string): Promise<Auth | Error> => {
-  try {
-    const { data } = await Api.post('/auth/login', { email, password });
-
-    if (data)
-      return data;
-
-    return new Error('Erro no login.');
-  } catch (error) {
-    console.error(error);
-    return new Error((error as { message: string }).message || 'Erro no login.');
-  }
+const auth = async (email: string, password: string): Promise<Auth> => {
+  return await Api.post('/auth/login', { email, password });
 };
 
 export const AuthService = {

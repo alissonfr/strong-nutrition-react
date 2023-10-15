@@ -23,7 +23,7 @@ export const Input: React.FC<InputProps> = ({ label, type, value, error, helperT
           onChange={e => onChange(e.target.value)}
           onKeyDown={onKeyDown}
         />
-        {error && <p>{helperText}</p>}
+        {error && <p>&#9888; {helperText}</p>}
       </div>
     );
 }

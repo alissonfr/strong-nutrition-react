@@ -1,7 +1,8 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 import { AuthService } from '../services/AuthService';
-
+import { useSnackbar } from './SnackbarContext';
+import { Api } from '../services/axios-config';
 
 interface AuthContextData {
   logout: () => void;
@@ -10,13 +11,14 @@ interface AuthContextData {
 }
 
 const AuthContext = createContext({} as AuthContextData);
-
 const LOCAL_STORAGE_TOKEN_KEY = 'token';
+const LOCAL_STORAGE_USER_KEY = 'user';
 
 interface AuthProviderProps {
   children: React.ReactNode;
 }
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+  const showSnackbar = useSnackbar();
   const [token, setToken] = useState<string>();
 
   useEffect(() => {
@@ -28,17 +30,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setToken(undefined);
     }
   }, []);
-
-
+  
   const handleLogin = useCallback(async (email: string, password: string) => {
-    const result = await AuthService.auth(email, password);
-    if (result instanceof Error) {
-      return result.message;
-    } else {
-      localStorage.setItem(LOCAL_STORAGE_TOKEN_KEY, JSON.stringify(result.token));
-      setToken(result.token);
+    try {
+      const { data } = await Api.post('/auth/login', { email, password });
+      localStorage.setItem(LOCAL_STORAGE_TOKEN_KEY, JSON.stringify(data.token));
+      localStorage.setItem(LOCAL_STORAGE_USER_KEY, JSON.stringify(data.user));
+      setToken(data.token);
+      showSnackbar('Usuário logado com sucesso!', 'success');
+    } catch (error: any) {
+      showSnackbar(error.response.data.message, 'error');
     }
-  }, []);
+  }, [showSnackbar]);
 
   const handleLogout = useCallback(() => {
     localStorage.removeItem(LOCAL_STORAGE_TOKEN_KEY);

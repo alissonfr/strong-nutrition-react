@@ -2,18 +2,19 @@ import { MouseEventHandler } from "react"
 import "./Button.scss"
 
 interface ButtonProps {
-    variant: string;
     disabled: boolean;
     onClick: MouseEventHandler<HTMLButtonElement>;
     children: string;
 }
 
-export const Button: React.FC<ButtonProps> = ({ variant, disabled, onClick, children }) => {
+export const Button: React.FC<ButtonProps> = ({ disabled, onClick, children }) => {
     return (
       <button
+        type="button"
         disabled={disabled}
         onClick={onClick}>
-        {children}
+        {disabled ? '' : children}
+        {disabled && <div className="spinner"></div>}
       </button>
     );
   }
