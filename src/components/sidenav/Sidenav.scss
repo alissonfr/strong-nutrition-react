@@ -1,0 +1,73 @@
+@import "../../assets/theme/_colors.scss";
+
+.content {
+    display: flex;
+
+    .sidenav {
+        background-color: #FFF;
+        width: 250px;
+        font-size: 16px;
+        height: 100vh;
+    
+        .items {
+            padding-top: 50px;
+    
+            .sidenav-item {
+                .item {
+                    padding: 12px 0;
+                    padding-left: 16px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: flex-start;
+                    gap: 12px;
+                    color: #000;
+                    position: relative;
+                    cursor: default;
+        
+                    &:hover, &.active {
+                        background-color: $gray-200;
+                    }
+        
+                    i {
+                        color: $gray-500;
+                    }
+        
+                    .bar {
+                        position: absolute;
+                        top: 0;
+                        bottom: 0;
+                        left: 0;
+                        width: 8px;
+                        background-color: transparent;
+                        
+                        &.active {
+                            background-color: $green-logo;
+                        }
+                    }
+                }
+    
+                .children {
+                    display: none;
+                    background-color: $gray-200;
+                    font-size: 14px;
+                    cursor: default;
+                    
+                    .children-item {
+                        padding: 10px 0;
+                        padding-left: 32px;
+    
+                        &:hover {
+                            background-color: $gray-300;
+                        }
+                    }
+                }
+
+                &:hover {
+                    .children {
+                        display: block;
+                    }
+                }
+            }
+        }
+    }
+}

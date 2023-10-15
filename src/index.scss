@@ -1,0 +1,34 @@
+@import "./assets/theme/_colors.scss";
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    font-family: 'Nunito Sans', sans-serif;
+    // font-size: calc(.5vh + .5vw);
+    background-color: $body-bg;
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+    border-radius: 6px;
+    background-color: $gray-400;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 6px;
+    background-color: $gray-700;
+}
+
+.css-1i9p219-MuiPaper-root-MuiAlert-root,
+.css-8vnh0h-MuiPaper-root-MuiAlert-root {
+    align-items: center;
+}

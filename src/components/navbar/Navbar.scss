@@ -1,0 +1,22 @@
+@import "../../assets/theme/_colors.scss";
+
+.header {
+    background-color: $primary;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    color: #FFF;
+    font-size: 14px;
+
+    section {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+
+        span {
+            margin-right: 16px;
+        }
+    }
+}
