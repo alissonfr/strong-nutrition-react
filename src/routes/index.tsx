@@ -1,14 +1,12 @@
 import { useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-
 import { useDrawerContext } from '../contexts';
-// import {
-//   Dashboard,
-//   DetalheDePessoas,
-//   ListagemDePessoas,
-//   DetalheDeCidades,
-//   ListagemDeCidades,
-// } from '../pages';
+
+import HomeIcon from '@mui/icons-material/Home';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import BarChartIcon from '@mui/icons-material/BarChart';
+import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
+import { Caixa, Dashboard, Usuarios, Vendas } from '../pages';
 
 export const AppRoutes = () => {
   const { setDrawerOptions } = useDrawerContext();
@@ -16,34 +14,43 @@ export const AppRoutes = () => {
   useEffect(() => {
     setDrawerOptions([
       {
-        icon: 'home',
-        path: '/pagina-inicial',
+        icon: HomeIcon,
+        path: '/dashboard',
         label: 'Página inicial',
       },
       {
-        icon: 'location_city',
-        path: '/cidades',
-        label: 'Cidades',
+        icon: AttachMoneyIcon,
+        path: '/caixa',
+        label: 'Caixa',
       },
       {
-        icon: 'people',
-        path: '/pessoas',
-        label: 'Pessoas',
+        icon: BarChartIcon,
+        path: '/vendas',
+        label: 'Vendas',
+      },
+      {
+        icon: CreateNewFolderIcon,
+        path: '/cadastros',
+        label: 'Cadastros',
+        children: [
+          {
+            path: '/usuarios',
+            label: 'Usuários',
+          },
+        ]
       },
     ]);
   }, []);
 
   return (
     <Routes>
-      <Route path="/pagina-inicial" element={<div>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</div>} />
+      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/caixa" element={<Caixa />} />
+      <Route path="/vendas" element={<Vendas />} />
+      
+      <Route path="/cadastros/usuarios" element={<Usuarios />} />
 
-      {/* <Route path="/pessoas" element={<ListagemDePessoas />} />
-      <Route path="/pessoas/detalhe/:id" element={<DetalheDePessoas />} />
-
-      <Route path="/cidades" element={<ListagemDeCidades />} />
-      <Route path="/cidades/detalhe/:id" element={<DetalheDeCidades />} /> */}
-
-      <Route path="*" element={<Navigate to="/pagina-inicial" />} />
+      <Route path="*" element={<Navigate to="/dashboard" />} />
     </Routes>
   );
 };

@@ -1,9 +1,17 @@
+import { SvgIconTypeMap } from '@mui/material';
+import { OverridableComponent } from '@mui/material/OverridableComponent';
 import { createContext, useCallback, useContext, useState } from 'react';
 
-interface DrawerOption {
-  icon: string;
-  path: string;
+interface ChildrenDrawerOption {
   label: string;
+  path: string;
+}
+
+interface DrawerOption {
+  icon: OverridableComponent<SvgIconTypeMap>;
+  label: string;
+  path: string;
+  children?: ChildrenDrawerOption[];
 }
 
 interface DrawerContextData {

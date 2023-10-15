@@ -3,7 +3,7 @@ import { AuthProvider, DrawerProvider } from './contexts';
 import { BrowserRouter } from 'react-router-dom';
 import { Sidenav, Navbar, Login } from "./components";
 import { SnackbarProvider } from './contexts';
-
+import { AppRoutes } from './routes';
 
 function App() {
   return (
@@ -14,7 +14,7 @@ function App() {
             <BrowserRouter>
               <Navbar/>
               <Sidenav>
-                conteudo
+                <AppRoutes/>
               </Sidenav>
             </BrowserRouter>
           </DrawerProvider>
