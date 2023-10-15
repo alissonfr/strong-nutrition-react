@@ -1,6 +1,4 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-
-import { AuthService } from '../services/AuthService';
 import { useSnackbar } from './SnackbarContext';
 import { Api } from '../services/axios-config';
 
@@ -17,6 +15,7 @@ const LOCAL_STORAGE_USER_KEY = 'user';
 interface AuthProviderProps {
   children: React.ReactNode;
 }
+
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const showSnackbar = useSnackbar();
   const [token, setToken] = useState<string>();
@@ -30,7 +29,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setToken(undefined);
     }
   }, []);
-  
+
   const handleLogin = useCallback(async (email: string, password: string) => {
     try {
       const { data } = await Api.post('/auth/login', { email, password });
@@ -46,7 +45,23 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const handleLogout = useCallback(() => {
     localStorage.removeItem(LOCAL_STORAGE_TOKEN_KEY);
     setToken(undefined);
-  }, []);
+    showSnackbar('Usuário deslogado com sucesso!', 'success');
+  }, [showSnackbar]);
+
+  useEffect(() => {
+    const checkTokenExpiration = () => {
+      if (token) {
+        const decodedToken = JSON.parse(atob(token.split('.')[1]));
+        const expirationTime = decodedToken.exp * 1000;
+        if (Date.now() >= expirationTime) {
+          handleLogout();
+        }
+      }
+    };
+
+    const tokenCheckInterval = setInterval(checkTokenExpiration, 5000); // Verifique a cada minuto
+    return () => clearInterval(tokenCheckInterval);
+  }, [token, handleLogout]);
 
   const isAuthenticated = useMemo(() => !!token, [token]);
 
