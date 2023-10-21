@@ -1,0 +1,32 @@
+.box {
+  .close {
+    position: absolute;
+    right: 0;
+    margin-top: 1rem;
+    width: 5px;
+  }
+
+  .save {
+    width: 100px;
+  }
+
+  .modal {
+    width: 800px;
+    height: 330px;
+
+    .row {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      margin-right: 2.5rem;
+      button {
+        margin-top: 2rem;
+      }
+
+      .input {
+        margin-top: 0.5rem;
+      }
+    }
+  }
+}
