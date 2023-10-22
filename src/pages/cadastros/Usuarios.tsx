@@ -1,15 +1,17 @@
-import React, { useState } from "react";
-import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogActions from "@mui/material/DialogActions";
-import { Input } from "../../components/cadastro/components/input/Input";
-import { FaTimes } from "react-icons/fa";
+import './style.scss';
 
-import "./style.scss";
-import { Switch } from "@mui/material";
+import { Switch } from '@mui/material';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import { FaTimes } from 'react-icons/fa';
+
+import { Input } from '../../components/cadastro/components/input/Input';
+import { User } from '../../models/user';
+import { useEffect, useState } from 'react';
+import { useAuthContext } from '../../contexts';
 
 export const Usuarios: React.FC = () => {
   const [open, setOpen] = useState(false);
@@ -26,6 +28,8 @@ export const Usuarios: React.FC = () => {
   const [bairro, setBairro] = useState("");
   const [estado, setEstado] = useState("");
   const [cidade, setCidade] = useState("");
+  const [users, setUser] = useState<User[]>([]);
+  const { token } = useAuthContext();
 
   const handleOpen = () => {
     setOpen(true);
@@ -34,6 +38,29 @@ export const Usuarios: React.FC = () => {
   const handleClose = () => {
     setOpen(false);
   };
+
+  useEffect(() => {
+    if (token) {
+      fetch("http://localhost:3001/strong-nutrition/user", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          setUser(data);
+        })
+        .catch((error) => {
+          console.error("Error fetching users:", error);
+        });
+    }
+  }, [token]);
 
   return (
     <div>
@@ -167,6 +194,31 @@ export const Usuarios: React.FC = () => {
           <Button className="save">Salvar</Button>
         </DialogActions>
       </Dialog>
+
+      <div className='list'>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nome</th>
+              <th>Email</th>
+              <th>CPF</th>
+            </tr>
+          </thead>
+          <tbody>
+            {users.map((user) => (
+              <tr key={user.idUser}>
+                <td>{user.idUser}</td>
+                <td>{user.nome}</td>
+                <td>{user.email}</td>
+                <td>{user.cpf}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+
     </div>
   );
 };

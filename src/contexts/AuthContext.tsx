@@ -6,6 +6,7 @@ interface AuthContextData {
   logout: () => void;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<string | void>;
+  token: string | undefined; 
 }
 
 const AuthContext = createContext({} as AuthContextData);
@@ -66,7 +67,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const isAuthenticated = useMemo(() => !!token, [token]);
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login: handleLogin, logout: handleLogout }}>
+    <AuthContext.Provider value={{ token, isAuthenticated, login: handleLogin, logout: handleLogout }}>
       {children}
     </AuthContext.Provider>
   );
