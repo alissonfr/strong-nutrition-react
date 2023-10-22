@@ -6,7 +6,6 @@ interface AuthContextData {
   logout: () => void;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<string | void>;
-  token: string | undefined; 
 }
 
 const AuthContext = createContext({} as AuthContextData);
@@ -24,11 +23,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     const token = localStorage.getItem(LOCAL_STORAGE_TOKEN_KEY);
 
-    if (token) {
+    if (token)
       setToken(JSON.parse(token));
-    } else {
-      setToken(undefined);
-    }
   }, []);
 
   const handleLogin = useCallback(async (email: string, password: string) => {
@@ -60,14 +56,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
     };
 
-    const tokenCheckInterval = setInterval(checkTokenExpiration, 5000); // Verifique a cada minuto
+    const tokenCheckInterval = setInterval(checkTokenExpiration, 5000);
     return () => clearInterval(tokenCheckInterval);
   }, [token, handleLogout]);
 
   const isAuthenticated = useMemo(() => !!token, [token]);
 
   return (
-    <AuthContext.Provider value={{ token, isAuthenticated, login: handleLogin, logout: handleLogout }}>
+    <AuthContext.Provider value={{ isAuthenticated, login: handleLogin, logout: handleLogout }}>
       {children}
     </AuthContext.Provider>
   );

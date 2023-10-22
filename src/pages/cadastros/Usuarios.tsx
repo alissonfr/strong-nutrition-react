@@ -1,4 +1,4 @@
-import './style.scss';
+import './Usuarios.scss';
 
 import { Switch } from '@mui/material';
 import Button from '@mui/material/Button';
@@ -11,9 +11,12 @@ import { FaTimes } from 'react-icons/fa';
 import { Input } from '../../components/cadastro/components/input/Input';
 import { User } from '../../models/user';
 import { useEffect, useState } from 'react';
-import { useAuthContext } from '../../contexts';
+import { useSnackbar } from '../../contexts';
+import { find } from '../../services/user.service';
 
 export const Usuarios: React.FC = () => {
+  const showSnackbar = useSnackbar();
+
   const [open, setOpen] = useState(false);
   const [passwordError, setPasswordError] = useState("");
   const [emailError, setEmailError] = useState("");
@@ -29,7 +32,6 @@ export const Usuarios: React.FC = () => {
   const [estado, setEstado] = useState("");
   const [cidade, setCidade] = useState("");
   const [users, setUser] = useState<User[]>([]);
-  const { token } = useAuthContext();
 
   const handleOpen = () => {
     setOpen(true);
@@ -40,27 +42,14 @@ export const Usuarios: React.FC = () => {
   };
 
   useEffect(() => {
-    if (token) {
-      fetch("http://localhost:3001/strong-nutrition/user", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+    find()
+      .then((data) => {
+        setUser(data);
       })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
-          return response.json();
-        })
-        .then((data) => {
-          setUser(data);
-        })
-        .catch((error) => {
-          console.error("Error fetching users:", error);
-        });
-    }
-  }, [token]);
+      .catch((error) => {
+        showSnackbar(error.response.data.message, 'error');
+      });
+  }, [showSnackbar]);
 
   return (
     <div>
