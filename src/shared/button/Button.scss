@@ -1,0 +1,59 @@
+@import "../../assets/theme/_colors.scss";
+
+.custom-button {
+    font-family: 'Nunito Sans', sans-serif;
+    border: none;
+    color: #FFF;
+    font-weight: 600;
+    padding: 0 28px;
+    font-size: 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+
+    display: inline-flex;
+    font-weight: 500;
+    font-size: 16px;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    
+    &:disabled::after {
+        width: 40px;
+        border-radius: 50%;
+    }
+    
+    &.normal {
+        height: 38px;
+    }
+
+    &.large {
+        height: 48px;
+    }
+
+
+    &.primary {
+        background-color: $primary;
+    }
+
+    &.secondary {
+        background-color: $green-logo;
+    }
+
+    &.outlined {
+        background-color: transparent;
+        color: $primary;
+        border: 1px solid $primary;
+    }
+
+    i {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        
+        .btn-icon {
+            font-size: 16px;
+        }
+    }
+
+}

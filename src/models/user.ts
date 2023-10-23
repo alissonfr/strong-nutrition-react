@@ -1,8 +1,8 @@
 export interface User {
-    idUser: number;
+    idUser?: number;
     nome: string;
     cpf: string;
-    dataNascimento: Date;
+    dataNascimento: string;
     telefone: string;
     email: string;
     senha: string;
@@ -11,7 +11,7 @@ export interface User {
     cidade: string;
     bairro: string;
     rua: string;
-    residencia: number;
+    residencia: string;
     complemento: string;
   };
   

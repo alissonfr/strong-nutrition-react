@@ -10,9 +10,9 @@ export const getUserById = async (id: number) => {
   }
 };
 
-export const find = async () => {
+export const findUsers = async (page: number, pageSize: number, nome: string, email: string) => {
     try {
-      const response = await Api.get(`/user`);
+      const response = await Api.get(`/user?page=${page}&pageSize=${pageSize}&nome=${nome}&email=${email}`);
       return response.data;
     } catch (error) {
       throw error;

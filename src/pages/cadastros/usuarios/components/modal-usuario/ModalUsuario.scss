@@ -1,0 +1,52 @@
+@import "../../../../../assets/theme/_colors.scss";
+
+.modal {
+  
+    .dialog-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: $gray-800;
+      padding: 20px;
+      background-color: $gray-100;
+      
+      .dialog-title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        
+        h1 {
+          font-size: 20px;
+          line-height: 1.75rem;
+        }
+      }
+
+      .close-icon {
+        cursor: pointer;
+      }
+    }  
+
+    .dialog-content {
+  
+      .row {
+        display: flex;
+        width: 100%;
+        gap: 16px;
+        margin: 12px 0;
+
+        .input {
+          display: flex;
+          width: 100%;
+        }
+      }
+    }
+
+    .modal-footer {
+      background-color: #FFF;
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 16px;
+    }
+  }

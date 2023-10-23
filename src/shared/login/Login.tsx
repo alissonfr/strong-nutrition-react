@@ -2,9 +2,10 @@ import './Login.scss';
 import * as yup from 'yup';
 import { useState } from 'react';
 import { useAuthContext } from "../../contexts/AuthContext";
-import { Input } from './components/input/Input';
-import { Button } from './components/button/Button';
 import LogoDark from './../../assets/logo-dark.png'
+import { Input } from '../input/Input';
+import { Button } from '../button/Button';
+import LoginIcon from '@mui/icons-material/Login';
 
 
 const loginSchema = yup.object().shape({
@@ -17,7 +18,6 @@ interface LoginProps {
 }
 export const Login: React.FC<LoginProps> = ({ children }) => {
   const { isAuthenticated, login } = useAuthContext();
-  const [isLoading, setIsLoading] = useState(false);
 
   const [passwordError, setPasswordError] = useState('');
   const [emailError, setEmailError] = useState('');
@@ -25,12 +25,11 @@ export const Login: React.FC<LoginProps> = ({ children }) => {
   const [email, setEmail] = useState('');
 
   const handleSubmit = () => {
-    setIsLoading(true);
     
     loginSchema
     .validate({ email, password }, { abortEarly: false })
     .then(data => { 
-      login(data.email, data.password).finally(() => setIsLoading(false));
+      login(data.email, data.password)
        })
       .catch((errors: yup.ValidationError) => {
         errors.inner.forEach(error => {
@@ -40,7 +39,7 @@ export const Login: React.FC<LoginProps> = ({ children }) => {
             setPasswordError(error.message);
           }
         });
-      }).finally(() => setIsLoading(false))
+      })
   };
 
   if (isAuthenticated) return (
@@ -59,28 +58,30 @@ export const Login: React.FC<LoginProps> = ({ children }) => {
           <h2>Seja bem-vindo a <b>Strong Nutrition</b></h2>
           <form>
             <Input
-              label="Email"
+              label="Email *"
+              placeholder="Email"
               type="email"
               value={email}
-              disabled={isLoading}
               error={!!emailError}
               helperText={emailError}
               onKeyDown={() => setEmailError('')}
-              onChange={setEmail}
-            />
+              onChange={e => {setEmail(e.target.value)}}
+              />
             <Input
-              label="Senha"
+              label="Senha *"
+              placeholder="Senha"
               type="password"
               value={password}
-              disabled={isLoading}
               error={!!passwordError}
               helperText={passwordError}
               onKeyDown={() => setPasswordError('')}
-              onChange={setPassword}
+              onChange={e => {setPassword(e.target.value)}}
             />
             <div className="button">
               <Button
-                disabled={isLoading}
+                color="secondary"
+                size="large"
+                startIcon={LoginIcon}
                 onClick={handleSubmit}>
                 Entrar
               </Button>

@@ -11,8 +11,7 @@ html, body {
 }
 
 body {
-    font-family: 'Nunito Sans', sans-serif;
-    // font-size: calc(.5vh + .5vw);
+    font-family: 'Nunito Sans', sans-serif !important;
     background-color: $body-bg;
 }
 
@@ -32,3 +31,13 @@ body {
 .css-8vnh0h-MuiPaper-root-MuiAlert-root {
     align-items: center;
 }
+
+.css-pdct74-MuiTablePagination-selectLabel, 
+.css-levciy-MuiTablePagination-displayedRows, 
+.css-6hp17o-MuiList-root-MuiMenu-list {
+    font-family: 'Nunito Sans', sans-serif !important;
+}
+
+.css-12rl710-MuiPaper-root-MuiDialog-paper {
+    background-color: $gray-100;
+  }

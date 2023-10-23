@@ -41,9 +41,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const handleLogout = useCallback(() => {
     localStorage.removeItem(LOCAL_STORAGE_TOKEN_KEY);
+    localStorage.removeItem(LOCAL_STORAGE_USER_KEY);
     setToken(undefined);
-    showSnackbar('Usuário deslogado com sucesso!', 'success');
-  }, [showSnackbar]);
+  }, []);
 
   useEffect(() => {
     const checkTokenExpiration = () => {
