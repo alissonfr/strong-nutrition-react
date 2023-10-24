@@ -21,11 +21,14 @@ export const Usuarios: React.FC = () => {
 
   const handleClose = () => {
     setOpen(false);
+    setSelectedUser(null)
   };
 
   const handleUserSelect = (user: User) => {
     handleOpen()
-    setSelectedUser(user);
+    const updateUser = user
+    delete updateUser.senha
+    setSelectedUser(updateUser);
   };
 
   return (

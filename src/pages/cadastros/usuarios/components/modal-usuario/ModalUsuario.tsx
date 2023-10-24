@@ -26,7 +26,7 @@ interface ModalUsuarioProps {
 export const ModalUsuario: React.FC<ModalUsuarioProps> = ({ open, onClose, selectedUser }) => {
   const showSnackbar = useSnackbar();
 
-  const [userData, setUserData] = useState<User>({
+  const initialState = {
     idUser: 0,
     nome: "",
     cpf: "",
@@ -41,7 +41,9 @@ export const ModalUsuario: React.FC<ModalUsuarioProps> = ({ open, onClose, selec
     rua: "",
     residencia: "",
     complemento: "",
-  });
+  };
+
+  const [userData, setUserData] = useState<User>(initialState);
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
@@ -75,8 +77,14 @@ export const ModalUsuario: React.FC<ModalUsuarioProps> = ({ open, onClose, selec
       });
   };
 
+  const handleOnClose = async () => {
+    onClose();
+    setUserData(initialState);
+  }
+
   useEffect(() => {
-    console.log(selectedUser)
+    if (!selectedUser) return
+    setUserData(selectedUser)
   }, [selectedUser]);
 
   return (
@@ -86,7 +94,7 @@ export const ModalUsuario: React.FC<ModalUsuarioProps> = ({ open, onClose, selec
           <AssignmentIcon />
           <h1>{selectedUser ? "Atualizar cliente" : "Novo cliente"}</h1>
         </div>
-        <CloseIcon className="close-icon" onClick={onClose} />
+        <CloseIcon className="close-icon" onClick={handleOnClose} />
       </header>
       <DialogContent className="dialog-content">
         <div className="row">
@@ -209,7 +217,7 @@ export const ModalUsuario: React.FC<ModalUsuarioProps> = ({ open, onClose, selec
       </DialogContent>
 
       <div className="modal-footer">
-        <Button color="outlined" size="normal" onClick={onClose}>Cancelar</Button>
+        <Button color="outlined" size="normal" onClick={handleOnClose}>Cancelar</Button>
         <Button color="secondary" size="normal" onClick={handleSubmit}>Salvar</Button>
       </div>
     </Dialog>

@@ -5,7 +5,7 @@ export interface User {
     dataNascimento: string;
     telefone: string;
     email: string;
-    senha: string;
+    senha?: string;
     cep: string;
     uf: string;
     cidade: string;

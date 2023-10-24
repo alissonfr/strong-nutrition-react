@@ -60,13 +60,13 @@ export const TableUsuario: React.FC<TableUsuarioProps> = ({ onRowClick }) => {
         await fetchData(page, pageSize, search.nome, search.email);
     };
 
+    const handleRowClick = (user: User) => {
+        onRowClick(user);
+    };
+
     useEffect(() => {
         handleSearch();
     }, [page, pageSize, showSnackbar]);
-
-    const handleRowClick = (user: User) => {
-        onRowClick(user);
-      };
 
     return (
         <>
@@ -110,8 +110,8 @@ export const TableUsuario: React.FC<TableUsuarioProps> = ({ onRowClick }) => {
                     className="paginator"
                     component="div"
                     count={total}
-                    page={page}
-                    onPageChange={(event, newPage) => handlePageChange(newPage)}
+                    page={!users || users.length <= 0 ? 0 : page - 1}
+                    onPageChange={(event, newPage) => handlePageChange(newPage + 1)}
                     rowsPerPage={pageSize}
                     onRowsPerPageChange={(e) => handlePageSizeChange(e.target.value)}
                 />
