@@ -12,6 +12,7 @@ interface InputProps {
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
   style?: CSSProperties | undefined;
   placeholder?: string;
+  name?: string;
 }
 
 export const Input: React.FC<InputProps> = ({
@@ -24,6 +25,7 @@ export const Input: React.FC<InputProps> = ({
   onChange,
   style,
   placeholder,
+  name
 }) => {
   return (
     <div className="input-group">
@@ -32,6 +34,7 @@ export const Input: React.FC<InputProps> = ({
         className={`custom-input ${error ? "invalid" : ""}`}
         type={type}
         value={value}
+        name={name}
         placeholder={placeholder}
         onChange={onChange}
         onKeyDown={onKeyDown}

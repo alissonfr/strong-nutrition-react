@@ -46,6 +46,19 @@
         border: 1px solid $primary;
     }
 
+    &.cancel {
+        background-color: transparent;
+        color: $red-500;
+        border: 1px solid $red-500;
+        transition: all 250ms;
+
+        &:hover {
+            background-color: $red-500;
+            color: #FFF;
+            border: 1px solid transparent;
+        }
+    }
+
     i {
         display: flex;
         align-items: center;

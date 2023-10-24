@@ -7,8 +7,8 @@ interface ButtonProps {
     onClick?: MouseEventHandler<HTMLButtonElement>;
     children?: string;
     startIcon?: OverridableComponent<SvgIconTypeMap>;
-    size: "normal" | "large"
-    color?: "primary" | "secondary" | "outlined"
+    size: "normal" | "large";
+    color?: "primary" | "secondary" | "outlined" | "cancel";
 }
 
 export const Button: React.FC<ButtonProps> = ({ onClick, children, startIcon, size, color="primary" }) => {

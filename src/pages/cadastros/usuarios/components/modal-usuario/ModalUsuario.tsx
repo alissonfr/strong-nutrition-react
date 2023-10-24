@@ -5,16 +5,17 @@ import { Dialog, DialogContent } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { Button, Input } from "../../../../../shared";
 import AssignmentIcon from '@mui/icons-material/Assignment';
-import { createUser, updateUser } from "../../../../../services/user.service";
 import { User } from "../../../../../models/user";
 import { useSnackbar } from "../../../../../contexts";
+import { createUser, deleteUser, updateUser } from "../../../../../services/user.service";
 
 const userSchema = yup.object().shape({
   nome: yup.string().required('Nome é obrigatório'),
-  cpf: yup.string().matches(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/, "CPF inválido").required("CPF é obrigatório"),
+  cpf: yup.string().matches(/^\d{11}$/, "CPF inválido").required("CPF é obrigatório"),
   email: yup.string().email('Digite um endereço de email válido').required('O email é obrigatório'),
   senha: yup.string().required('A senha é obrigatória').matches(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$/, "A senha deve conter letras maiúsculas, minúsculas números e caracteres especiais"),
-  dataNascimento: yup.date().max(new Date(), "Data de nascimento inválida")
+  dataNascimento: yup.date().nullable().transform((curr, orig) => orig === '' ? null : curr).required("Data de nascimento inválida"),
+  telefone: yup.string().required('Telefone é obrigatório'),
 });
 
 interface ModalUsuarioProps {
@@ -45,18 +46,45 @@ export const ModalUsuario: React.FC<ModalUsuarioProps> = ({ open, onClose, selec
 
   const [userData, setUserData] = useState<User>(initialState);
 
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
-    if (userData.idUser && userData.idUser > 0) {
-      return handleUpdateUser()
-    }
-    return handleCreateUser()
+  const [errors, setErrors] = useState(initialState);
+
+  const handleInputChange = (e: any) => {
+    const { name, value } = e.target;
+    setUserData({
+      ...userData,
+      [name]: value,
+    });
+    setErrors({
+      ...errors,
+      [name]: '',
+    });
+  };
+
+  const handleSubmit = () => {
+    userSchema
+      .validate(userData, { abortEarly: false })
+      .then((data: any) => {
+        if (userData.idUser && userData.idUser > 0) {
+          return handleUpdateUser()
+        }
+        return handleCreateUser()
+      })
+      .catch((yupErrors) => {
+        yupErrors.inner.forEach((error: any) => {
+          setErrors((prevErrors) => ({
+            ...prevErrors,
+            [error.path]: error.message,
+          }));
+        });
+      });
   };
 
   const handleCreateUser = async () => {
-    createUser(userData)
+    const user = userData;
+    delete userData.idUser;
+    createUser(user)
       .then(() => {
-        onClose()
+        handleOnClose()
         showSnackbar("Usuário criado com sucesso!", 'success');
       })
       .catch((error) => {
@@ -69,7 +97,7 @@ export const ModalUsuario: React.FC<ModalUsuarioProps> = ({ open, onClose, selec
 
     updateUser(userData.idUser, userData)
       .then(() => {
-        onClose()
+        handleOnClose()
         showSnackbar("Usuário criado com sucesso!", 'success');
       })
       .catch((error) => {
@@ -77,14 +105,30 @@ export const ModalUsuario: React.FC<ModalUsuarioProps> = ({ open, onClose, selec
       });
   };
 
-  const handleOnClose = async () => {
-    onClose();
+  const handleDeleteUser = async () => {
+    if (!userData.idUser) return
+
+    deleteUser(userData.idUser)
+      .then(() => {
+        handleOnClose()
+        showSnackbar("Usuário apagado com sucesso!", 'success');
+      })
+      .catch((error) => {
+        showSnackbar(error.response.data.message, 'error');
+      });
+  };
+
+  const handleOnClose = () => {
     setUserData(initialState);
+    setErrors(initialState);
+    onClose();
   }
 
   useEffect(() => {
-    if (!selectedUser) return
-    setUserData(selectedUser)
+    if(selectedUser) {
+      delete selectedUser.senha;
+      setUserData(selectedUser)
+    }
   }, [selectedUser]);
 
   return (
@@ -103,7 +147,11 @@ export const ModalUsuario: React.FC<ModalUsuarioProps> = ({ open, onClose, selec
               label="Nome *"
               placeholder="Guilherme Novais"
               value={userData.nome}
-              onChange={e => setUserData({ ...userData, nome: e.target.value })}
+              name="nome"
+              error={!!errors.nome}
+              helperText={errors.nome}
+              onKeyDown={handleInputChange}
+              onChange={handleInputChange}
             />
           </div>
 
@@ -112,7 +160,11 @@ export const ModalUsuario: React.FC<ModalUsuarioProps> = ({ open, onClose, selec
               label="CPF *"
               placeholder="059.654.852-64"
               value={userData.cpf}
-              onChange={e => setUserData({ ...userData, cpf: e.target.value })}
+              name="cpf"
+              error={!!errors.cpf}
+              helperText={errors.cpf}
+              onKeyDown={handleInputChange}
+              onChange={handleInputChange}
             />
           </div>
         </div>
@@ -124,7 +176,11 @@ export const ModalUsuario: React.FC<ModalUsuarioProps> = ({ open, onClose, selec
               placeholder="guilhermenovais@gmail.com"
               type="email"
               value={userData.email}
-              onChange={e => setUserData({ ...userData, email: e.target.value })}
+              name="email"
+              error={!!errors.email}
+              helperText={errors.email}
+              onKeyDown={handleInputChange}
+              onChange={handleInputChange}
             />
           </div>
           <div className="input" style={{ maxWidth: "32%" }}>
@@ -133,7 +189,11 @@ export const ModalUsuario: React.FC<ModalUsuarioProps> = ({ open, onClose, selec
               placeholder="********"
               type="password"
               value={userData.senha}
-              onChange={e => setUserData({ ...userData, senha: e.target.value })}
+              name="senha"
+              error={!!errors.senha}
+              helperText={errors.senha}
+              onKeyDown={handleInputChange}
+              onChange={handleInputChange}
             />
           </div>
 
@@ -146,7 +206,11 @@ export const ModalUsuario: React.FC<ModalUsuarioProps> = ({ open, onClose, selec
               type="date"
               placeholder="29/03/2003"
               value={userData.dataNascimento}
-              onChange={e => setUserData({ ...userData, dataNascimento: e.target.value })}
+              name="dataNascimento"
+              error={!!errors.dataNascimento}
+              helperText={errors.dataNascimento}
+              onKeyDown={handleInputChange}
+              onChange={handleInputChange}
             />
           </div>
           <div className="input">
@@ -154,7 +218,11 @@ export const ModalUsuario: React.FC<ModalUsuarioProps> = ({ open, onClose, selec
               label="Telefone *"
               placeholder="77 99848-9212"
               value={userData.telefone}
-              onChange={e => setUserData({ ...userData, telefone: e.target.value })}
+              name="telefone"
+              error={!!errors.telefone}
+              helperText={errors.telefone}
+              onKeyDown={handleInputChange}
+              onChange={handleInputChange}
             />
           </div>
 
@@ -163,7 +231,8 @@ export const ModalUsuario: React.FC<ModalUsuarioProps> = ({ open, onClose, selec
               label="CEP"
               placeholder="45665-965"
               value={userData.cep}
-              onChange={e => setUserData({ ...userData, cep: e.target.value })}
+              name="cep"
+              onChange={handleInputChange}
             />
           </div>
         </div>
@@ -174,7 +243,8 @@ export const ModalUsuario: React.FC<ModalUsuarioProps> = ({ open, onClose, selec
               label="Endereço"
               placeholder="Rua Arlindo Barros"
               value={userData.rua}
-              onChange={e => setUserData({ ...userData, rua: e.target.value })}
+              name="rua"
+              onChange={handleInputChange}
             />
           </div>
           <div className="input">
@@ -182,7 +252,8 @@ export const ModalUsuario: React.FC<ModalUsuarioProps> = ({ open, onClose, selec
               label="Número"
               placeholder="23"
               value={userData.residencia}
-              onChange={e => setUserData({ ...userData, residencia: e.target.value })}
+              name="residencia"
+              onChange={handleInputChange}
             />
           </div>
 
@@ -191,7 +262,8 @@ export const ModalUsuario: React.FC<ModalUsuarioProps> = ({ open, onClose, selec
               label="Bairro"
               placeholder="Miro Cairo"
               value={userData.bairro}
-              onChange={e => setUserData({ ...userData, bairro: e.target.value })}
+              name="bairro"
+              onChange={handleInputChange}
             />
           </div>
         </div>
@@ -202,7 +274,8 @@ export const ModalUsuario: React.FC<ModalUsuarioProps> = ({ open, onClose, selec
               label="Cidade"
               placeholder="Vitória da Conquista"
               value={userData.cidade}
-              onChange={e => setUserData({ ...userData, cidade: e.target.value })}
+              name="cidade"
+              onChange={handleInputChange}
             />
           </div>
           <div className="input" style={{ maxWidth: "20%" }}>
@@ -210,14 +283,15 @@ export const ModalUsuario: React.FC<ModalUsuarioProps> = ({ open, onClose, selec
               label="UF"
               placeholder="BA"
               value={userData.uf}
-              onChange={e => setUserData({ ...userData, uf: e.target.value })}
+              name="uf"
+              onChange={handleInputChange}
             />
           </div>
         </div>
       </DialogContent>
 
       <div className="modal-footer">
-        <Button color="outlined" size="normal" onClick={handleOnClose}>Cancelar</Button>
+        {selectedUser ? <Button color="cancel" size="normal" onClick={handleDeleteUser}>Apagar</Button> : <div></div>}
         <Button color="secondary" size="normal" onClick={handleSubmit}>Salvar</Button>
       </div>
     </Dialog>

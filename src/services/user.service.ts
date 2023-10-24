@@ -30,6 +30,7 @@ export const createUser = async (user: User) => {
 
 export const updateUser = async (id: number, user: User) => {
   try {
+    delete user.idUser;
     const response = await Api.put(`/user/${id}`, user);
     return response.data;
   } catch (error) {

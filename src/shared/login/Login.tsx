@@ -19,27 +19,42 @@ interface LoginProps {
 export const Login: React.FC<LoginProps> = ({ children }) => {
   const { isAuthenticated, login } = useAuthContext();
 
-  const [passwordError, setPasswordError] = useState('');
-  const [emailError, setEmailError] = useState('');
-  const [password, setPassword] = useState('');
-  const [email, setEmail] = useState('');
+  const [formValues, setFormValues] = useState({
+    email: '',
+    password: '',
+  });
+
+  const [errors, setErrors] = useState({
+    email: '',
+    password: '',
+  });
+
+  const handleInputChange = (e: any) => {
+    const { name, value } = e.target;
+    setFormValues({
+      ...formValues,
+      [name]: value,
+    });
+    setErrors({
+      ...errors,
+      [name]: '',
+    });
+  };
 
   const handleSubmit = () => {
-    
     loginSchema
-    .validate({ email, password }, { abortEarly: false })
-    .then(data => { 
-      login(data.email, data.password)
-       })
-      .catch((errors: yup.ValidationError) => {
-        errors.inner.forEach(error => {
-          if (error.path === 'email') {
-            setEmailError(error.message);
-          } else if (error.path === 'password') {
-            setPasswordError(error.message);
-          }
-        });
+      .validate(formValues, { abortEarly: false })
+      .then((data) => {
+        login(data.email, data.password);
       })
+      .catch((yupErrors) => {
+        yupErrors.inner.forEach((error: any) => {
+          setErrors((prevErrors) => ({
+            ...prevErrors,
+            [error.path]: error.message,
+          }));
+        });
+      });
   };
 
   if (isAuthenticated) return (
@@ -61,22 +76,25 @@ export const Login: React.FC<LoginProps> = ({ children }) => {
               label="Email *"
               placeholder="Email"
               type="email"
-              value={email}
-              error={!!emailError}
-              helperText={emailError}
-              onKeyDown={() => setEmailError('')}
-              onChange={e => {setEmail(e.target.value)}}
-              />
+              name="email"
+              value={formValues.email}
+              error={!!errors.email}
+              helperText={errors.email}
+              onKeyDown={handleInputChange}
+              onChange={handleInputChange}
+            />
             <Input
               label="Senha *"
               placeholder="Senha"
               type="password"
-              value={password}
-              error={!!passwordError}
-              helperText={passwordError}
-              onKeyDown={() => setPasswordError('')}
-              onChange={e => {setPassword(e.target.value)}}
+              name="password"
+              value={formValues.password}
+              error={!!errors.password}
+              helperText={errors.password}
+              onKeyDown={handleInputChange}
+              onChange={handleInputChange}
             />
+
             <div className="button">
               <Button
                 color="secondary"

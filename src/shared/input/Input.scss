@@ -24,6 +24,10 @@
     &.invalid {
       border: 1px solid $red-400;
     }
+
+    &::placeholder {
+      color: $gray-400;
+    }
   }
 
   label {

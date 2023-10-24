@@ -45,7 +45,7 @@ const SidenavItem: React.FC<SidenavItemProps> = ({ path, icon, label, onClick, c
                     {label}
                 </div>
                 {children ? children.map((child: any) => (
-                    <div className="children" onClick={() => handleChildClick(child.path)}>
+                    <div key={child} className="children" onClick={() => handleChildClick(child.path)}>
                         <div className="children-item">{child.label}</div>
                     </div>
                 )) : ''}

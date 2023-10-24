@@ -5,7 +5,6 @@ import { TablePagination } from '@mui/material';
 import { findUsers } from "../../../../../services/user.service";
 import { User } from "../../../../../models/user";
 import { useSnackbar } from "../../../../../contexts";
-import DeleteIcon from '@mui/icons-material/Delete';
 import { Button, Input } from "../../../../../shared";
 
 import SearchIcon from '@mui/icons-material/Search';
@@ -61,12 +60,13 @@ export const TableUsuario: React.FC<TableUsuarioProps> = ({ onRowClick }) => {
     };
 
     const handleRowClick = (user: User) => {
-        onRowClick(user);
+        const updateUser = user
+        onRowClick(updateUser);
     };
 
     useEffect(() => {
         handleSearch();
-    }, [page, pageSize, showSnackbar]);
+    }, [page, pageSize, showSnackbar, onRowClick]);
 
     return (
         <>
@@ -101,7 +101,6 @@ export const TableUsuario: React.FC<TableUsuarioProps> = ({ onRowClick }) => {
                                 <td>{user.nome}</td>
                                 <td>{user.email}</td>
                                 <td>{user.cpf}</td>
-                                <td><DeleteIcon className="delete-icon" /></td>
                             </tr>
                         ))}
                     </tbody>

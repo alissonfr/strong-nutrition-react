@@ -9,8 +9,6 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import { Button } from '../../../shared';
 import { User } from '../../../models/user';
 
-
-
 export const Usuarios: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
@@ -26,9 +24,7 @@ export const Usuarios: React.FC = () => {
 
   const handleUserSelect = (user: User) => {
     handleOpen()
-    const updateUser = user
-    delete updateUser.senha
-    setSelectedUser(updateUser);
+    setSelectedUser(user);
   };
 
   return (
@@ -41,7 +37,7 @@ export const Usuarios: React.FC = () => {
           <Button size="normal" startIcon={AssignmentIcon} onClick={handleOpen}>Novo</Button>
         </header>
 
-      <TableUsuario onRowClick={handleUserSelect}/>
+      <TableUsuario onRowClick={handleUserSelect} />
       <ModalUsuario open={open} onClose={handleClose} selectedUser={selectedUser} />
     </>
   )
