@@ -14,9 +14,7 @@ interface TableUsuarioProps {
   onRowClick: (fornecedor: Fornecedor) => void;
 }
 
-export const TableFornecedores: React.FC<TableUsuarioProps> = ({
-  onRowClick,
-}) => {
+export const TableFornecedores: React.FC<TableUsuarioProps> = ({onRowClick}) => {
   const showSnackbar = useSnackbar();
   const [fornecedores, setFornecedor] = useState<Fornecedor[]>([]);
 
@@ -26,7 +24,7 @@ export const TableFornecedores: React.FC<TableUsuarioProps> = ({
 
   const [search, setSearch] = useState({
     nomeFantasia: "",
-    razaoSocial: "",
+    cnpj: "",
   });
 
   const handlePageChange = (newPage: number) => {
@@ -42,9 +40,9 @@ export const TableFornecedores: React.FC<TableUsuarioProps> = ({
     page: number,
     pageSize: number,
     nomeFantasia: string,
-    razaoSocial: string
+    cnpj: string
   ) => {
-    findFornecedor(page, pageSize, nomeFantasia, razaoSocial)
+    findFornecedor(page, pageSize, nomeFantasia, cnpj)
       .then((data) => {
         setFornecedor(data.content);
         setTotal(data.total);
@@ -57,18 +55,17 @@ export const TableFornecedores: React.FC<TableUsuarioProps> = ({
   const handleCleanForm = async () => {
     setSearch({
       nomeFantasia: "",
-      razaoSocial: "",
+      cnpj: "",
     });
     await fetchData(page, pageSize, "", "");
   };
 
   const handleSearch = async () => {
-    await fetchData(page, pageSize, search.nomeFantasia, search.razaoSocial);
+    await fetchData(page, pageSize, search.nomeFantasia, search.cnpj);
   };
 
   const handleRowClick = (fornecedor: Fornecedor) => {
-    const updateFornecedor = fornecedor;
-    onRowClick(updateFornecedor);
+    onRowClick(fornecedor);
   };
 
   useEffect(() => {
@@ -87,10 +84,10 @@ export const TableFornecedores: React.FC<TableUsuarioProps> = ({
             }
           />
           <Input
-            placeholder="Razao Social"
-            value={search.razaoSocial}
+            placeholder="CNPJ"
+            value={search.cnpj}
             onChange={(e) =>
-              setSearch({ ...search, razaoSocial: e.target.value })
+              setSearch({ ...search, cnpj: e.target.value })
             }
           />
           <Button
@@ -108,7 +105,7 @@ export const TableFornecedores: React.FC<TableUsuarioProps> = ({
         <table>
           <thead>
             <tr>
-              <th>Codigo Fornecedor</th>
+              <th>ID</th>
               <th>Nome Fantasia</th>
               <th>Razão Social</th>
               <th>CNPJ</th>

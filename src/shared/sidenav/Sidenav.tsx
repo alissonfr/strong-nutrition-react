@@ -1,7 +1,7 @@
-import "./Sidenav.scss"
+import { useMediaQuery, useTheme } from '@mui/material';
 import { useMatch, useNavigate, useResolvedPath } from 'react-router-dom';
 import { useDrawerContext } from '../../contexts';
-import { useMediaQuery, useTheme } from '@mui/material';
+import "./Sidenav.scss";
 
 import { SvgIconTypeMap } from '@mui/material';
 import { OverridableComponent } from '@mui/material/OverridableComponent';
@@ -45,7 +45,7 @@ const SidenavItem: React.FC<SidenavItemProps> = ({ path, icon, label, onClick, c
                     {label}
                 </div>
                 {children ? children.map((child: any) => (
-                    <div key={child} className="children" onClick={() => handleChildClick(child.path)}>
+                    <div key={child.path} className="children" onClick={() => handleChildClick(child.path)}>
                         <div className="children-item">{child.label}</div>
                     </div>
                 )) : ''}

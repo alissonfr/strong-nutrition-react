@@ -9,7 +9,7 @@ export const findFornecedor = async (
 ) => {
   try {
     const response = await Api.get(
-      `/fornecedor?page=${page}&pageSize=${pageSize}&nomefantasia=${nomeFantasia}&cnpj=${cnpj}`
+      `/fornecedor?page=${page}&pageSize=${pageSize}&nomeFantasia=${nomeFantasia}&cnpj=${cnpj}`
     );
     return response.data;
   } catch (error) {

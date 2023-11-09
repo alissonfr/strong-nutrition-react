@@ -1,13 +1,13 @@
-import "./ModalUsuario.scss"
-import * as yup from 'yup';
-import { useEffect, useState } from 'react';
-import { Dialog, DialogContent } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import { Button, Input } from "../../../../../shared";
 import AssignmentIcon from '@mui/icons-material/Assignment';
-import { User } from "../../../../../models/user";
+import CloseIcon from '@mui/icons-material/Close';
+import { Dialog, DialogContent } from '@mui/material';
+import { useEffect, useState } from 'react';
+import * as yup from 'yup';
 import { useSnackbar } from "../../../../../contexts";
+import { User } from "../../../../../models/user";
 import { createUser, deleteUser, updateUser } from "../../../../../services/user.service";
+import { Button, Input } from "../../../../../shared";
+import "./ModalUsuario.scss";
 
 const userSchema = yup.object().shape({
   nome: yup.string().required('Nome é obrigatório'),
@@ -85,7 +85,7 @@ export const ModalUsuario: React.FC<ModalUsuarioProps> = ({ open, onClose, selec
     createUser(user)
       .then(() => {
         handleOnClose()
-        showSnackbar("Usuário criado com sucesso!", 'success');
+        showSnackbar("Usuário cadastrado com sucesso!", 'success');
       })
       .catch((error) => {
         showSnackbar(error.response.data.message, 'error');
@@ -98,7 +98,7 @@ export const ModalUsuario: React.FC<ModalUsuarioProps> = ({ open, onClose, selec
     updateUser(userData.idUser, userData)
       .then(() => {
         handleOnClose()
-        showSnackbar("Usuário criado com sucesso!", 'success');
+        showSnackbar("Usuário atualizado com sucesso!", 'success');
       })
       .catch((error) => {
         showSnackbar(error.response.data.message, 'error');

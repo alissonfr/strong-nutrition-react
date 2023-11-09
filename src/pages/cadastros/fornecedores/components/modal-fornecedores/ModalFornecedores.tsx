@@ -1,7 +1,7 @@
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import CloseIcon from "@mui/icons-material/Close";
 import { Dialog, DialogContent } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as yup from "yup";
 import { useSnackbar } from "../../../../../contexts";
 import { Fornecedor } from "../../../../../models/fornecedor";
@@ -47,8 +47,7 @@ export const ModalFornecedores: React.FC<ModalFornecedorProps> = ({
     rua: "",
   };
 
-  const [fornecedorData, setFornecedorData] =
-    useState<Fornecedor>(initialState);
+  const [fornecedorData, setFornecedorData] = useState<Fornecedor>(initialState);
 
   const [errors, setErrors] = useState(initialState);
 
@@ -102,7 +101,7 @@ export const ModalFornecedores: React.FC<ModalFornecedorProps> = ({
     updateFornecedor(fornecedorData.idFornecedor, fornecedorData)
       .then(() => {
         handleOnClose();
-        showSnackbar("Fornecedor criado com sucesso!", "success");
+        showSnackbar("Fornecedor atualizado com sucesso!", "success");
       })
       .catch((error) => {
         showSnackbar(error.response.data.message, "error");
@@ -127,6 +126,12 @@ export const ModalFornecedores: React.FC<ModalFornecedorProps> = ({
     setErrors(initialState);
     onClose();
   };
+
+  useEffect(() => {
+    if(selectedFornecedor) {
+      setFornecedorData(selectedFornecedor)
+    }
+  }, [selectedFornecedor]);
 
   return (
     <Dialog

@@ -9,8 +9,7 @@ import { TableFornecedores } from "./components/table-fornecedores/TableForneced
 
 export const Fornecedores: React.FC = () => {
   const [open, setOpen] = useState(false);
-  const [selectedFornecedor, setSelectedFornecedor] =
-    useState<Fornecedor | null>(null);
+  const [selectedFornecedor, setSelectedFornecedor] = useState<Fornecedor | null>(null);
 
   const handleOpen = () => {
     setOpen(true);
