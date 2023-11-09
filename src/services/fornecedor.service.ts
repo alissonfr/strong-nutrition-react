@@ -5,11 +5,11 @@ export const findFornecedor = async (
   page: number,
   pageSize: number,
   nomeFantasia: string,
-  razaoSocial: string
+  cnpj: string
 ) => {
   try {
     const response = await Api.get(
-      `/fornecedor?page=${page}&pageSize=${pageSize}&nomefantasia=${nomeFantasia}&razaosocial=${razaoSocial}`
+      `/fornecedor?page=${page}&pageSize=${pageSize}&nomefantasia=${nomeFantasia}&cnpj=${cnpj}`
     );
     return response.data;
   } catch (error) {
@@ -28,7 +28,7 @@ export const createFornecedor = async (fornecedor: Fornecedor) => {
 
 export const updateFornecedor = async (id: number, fornecedor: Fornecedor) => {
   try {
-    delete fornecedor.codFornecedor;
+    delete fornecedor.idFornecedor;
     const response = await Api.put(`/fornecedor/${id}`, fornecedor);
     return response.data;
   } catch (error) {
@@ -36,9 +36,9 @@ export const updateFornecedor = async (id: number, fornecedor: Fornecedor) => {
   }
 };
 
-export const deleteFornecedor = async (codFornecedor: number) => {
+export const deleteFornecedor = async (idFornecedor: number) => {
   try {
-    const response = await Api.delete(`/fornecedor/${codFornecedor}`);
+    const response = await Api.delete(`/fornecedor/${idFornecedor}`);
     return response.data;
   } catch (error) {
     throw error;

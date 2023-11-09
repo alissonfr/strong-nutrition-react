@@ -1,17 +1,17 @@
-import "./ModalFornecedores.scss";
-import * as yup from "yup";
-import { useState } from "react";
-import { Dialog, DialogContent } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
-import { Button, Input } from "../../../../../shared";
 import AssignmentIcon from "@mui/icons-material/Assignment";
-import { Fornecedor } from "../../../../../models/fornecedor";
+import CloseIcon from "@mui/icons-material/Close";
+import { Dialog, DialogContent } from "@mui/material";
+import { useState } from "react";
+import * as yup from "yup";
 import { useSnackbar } from "../../../../../contexts";
+import { Fornecedor } from "../../../../../models/fornecedor";
 import {
   createFornecedor,
   deleteFornecedor,
   updateFornecedor,
 } from "../../../../../services/fornecedor.service";
+import { Button, Input } from "../../../../../shared";
+import "./ModalFornecedores.scss";
 
 const fornecedorSchema = yup.object().shape({
   nomeFantasia: yup.string().required("Nome Fantasia é obrigatório"),
@@ -34,7 +34,7 @@ export const ModalFornecedores: React.FC<ModalFornecedorProps> = ({
   const showSnackbar = useSnackbar();
 
   const initialState = {
-    codFornecedor: 0,
+    idFornecedor: 0,
     nomeFantasia: "",
     razaoSocial: "",
     cnpj: "",
@@ -68,7 +68,7 @@ export const ModalFornecedores: React.FC<ModalFornecedorProps> = ({
     fornecedorSchema
       .validate(fornecedorData, { abortEarly: false })
       .then((data: any) => {
-        if (fornecedorData.codFornecedor && fornecedorData.codFornecedor > 0) {
+        if (fornecedorData.idFornecedor && fornecedorData.idFornecedor > 0) {
           return handleUpdateFornecedor();
         }
         return handleCreateFornecedor();
@@ -85,7 +85,7 @@ export const ModalFornecedores: React.FC<ModalFornecedorProps> = ({
 
   const handleCreateFornecedor = async () => {
     const fornecedor = fornecedorData;
-    delete fornecedorData.codFornecedor;
+    delete fornecedorData.idFornecedor;
     createFornecedor(fornecedor)
       .then(() => {
         handleOnClose();
@@ -97,9 +97,9 @@ export const ModalFornecedores: React.FC<ModalFornecedorProps> = ({
   };
 
   const handleUpdateFornecedor = async () => {
-    if (!fornecedorData.codFornecedor) return;
+    if (!fornecedorData.idFornecedor) return;
 
-    updateFornecedor(fornecedorData.codFornecedor, fornecedorData)
+    updateFornecedor(fornecedorData.idFornecedor, fornecedorData)
       .then(() => {
         handleOnClose();
         showSnackbar("Fornecedor criado com sucesso!", "success");
@@ -110,9 +110,9 @@ export const ModalFornecedores: React.FC<ModalFornecedorProps> = ({
   };
 
   const handleDeleteFornecedor = async () => {
-    if (!fornecedorData.codFornecedor) return;
+    if (!fornecedorData.idFornecedor) return;
 
-    deleteFornecedor(fornecedorData.codFornecedor)
+    deleteFornecedor(fornecedorData.idFornecedor)
       .then(() => {
         handleOnClose();
         showSnackbar("Fornecedor apagado com sucesso!", "success");

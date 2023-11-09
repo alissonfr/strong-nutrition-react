@@ -41,3 +41,29 @@ body {
 .css-12rl710-MuiPaper-root-MuiDialog-paper {
     background-color: $gray-100;
   }
+
+  // RESET
+  .form-header {
+    margin-top: 36px;
+    margin-bottom: 20px;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: $gray-600;
+  
+    .header-title {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+  
+      h1 {
+        font-size: 20px;
+      }
+    }
+  
+    .button {
+      width: 200px;
+    }
+  }

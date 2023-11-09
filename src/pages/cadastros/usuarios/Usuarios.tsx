@@ -1,13 +1,11 @@
-import './Usuarios.scss';
-
 import { useState } from 'react';
 
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import PersonIcon from '@mui/icons-material/Person';
+import { User } from '../../../models/user';
+import { Button } from '../../../shared';
 import { ModalUsuario } from './components/modal-usuario/ModalUsuario';
 import { TableUsuario } from './components/table-usuario/TableUsuario';
-import PersonIcon from '@mui/icons-material/Person';
-import AssignmentIcon from '@mui/icons-material/Assignment';
-import { Button } from '../../../shared';
-import { User } from '../../../models/user';
 
 export const Usuarios: React.FC = () => {
   const [open, setOpen] = useState(false);
@@ -29,7 +27,7 @@ export const Usuarios: React.FC = () => {
 
   return (
     <>
-        <header className="usuario-header">
+        <header className="form-header">
           <div className="header-title">
             <PersonIcon className="icon" />
             <h1>Usuários</h1>

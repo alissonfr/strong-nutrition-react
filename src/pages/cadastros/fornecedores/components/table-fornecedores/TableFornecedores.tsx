@@ -1,12 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import "./TableFornecedores.scss";
-import { useEffect, useState } from "react";
 import { TablePagination } from "@mui/material";
+import { useEffect, useState } from "react";
 import { useSnackbar } from "../../../../../contexts";
 import { Button, Input } from "../../../../../shared";
+import "./TableFornecedores.scss";
 
-import SearchIcon from "@mui/icons-material/Search";
 import CleaningServicesIcon from "@mui/icons-material/CleaningServices";
+import SearchIcon from "@mui/icons-material/Search";
 import { Fornecedor } from "../../../../../models/fornecedor";
 import { findFornecedor } from "../../../../../services/fornecedor.service";
 
@@ -117,12 +117,12 @@ export const TableFornecedores: React.FC<TableUsuarioProps> = ({
           <tbody>
             {fornecedores.map((fornecedor) => (
               <tr
-                key={fornecedor.codFornecedor}
+                key={fornecedor.idFornecedor}
                 onClick={() => {
                   handleRowClick(fornecedor);
                 }}
               >
-                <td>{fornecedor.codFornecedor}</td>
+                <td>{fornecedor.idFornecedor}</td>
                 <td>{fornecedor.nomeFantasia}</td>
                 <td>{fornecedor.razaoSocial}</td>
                 <td>{fornecedor.cnpj}</td>
