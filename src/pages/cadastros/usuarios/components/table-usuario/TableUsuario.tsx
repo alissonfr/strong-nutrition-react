@@ -1,14 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import "./TableUsuario.scss"
-import { useEffect, useState } from 'react';
 import { TablePagination } from '@mui/material';
-import { findUsers } from "../../../../../services/user.service";
-import { User } from "../../../../../models/user";
+import { useEffect, useState } from 'react';
 import { useSnackbar } from "../../../../../contexts";
+import { User } from "../../../../../models/user";
+import { findUsers } from "../../../../../services/user.service";
 import { Button, Input } from "../../../../../shared";
 
-import SearchIcon from '@mui/icons-material/Search';
 import CleaningServicesIcon from '@mui/icons-material/CleaningServices';
+import SearchIcon from '@mui/icons-material/Search';
 
 interface TableUsuarioProps {
     onRowClick: (user: User) => void;
