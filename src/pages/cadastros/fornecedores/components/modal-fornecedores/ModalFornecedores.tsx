@@ -11,7 +11,6 @@ import {
   updateFornecedor,
 } from "../../../../../services/fornecedor.service";
 import { Button, Input } from "../../../../../shared";
-import "./ModalFornecedores.scss";
 
 const fornecedorSchema = yup.object().shape({
   nomeFantasia: yup.string().required("Nome Fantasia é obrigatório"),

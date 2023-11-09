@@ -7,7 +7,6 @@ import { useSnackbar } from "../../../../../contexts";
 import { User } from "../../../../../models/user";
 import { createUser, deleteUser, updateUser } from "../../../../../services/user.service";
 import { Button, Input } from "../../../../../shared";
-import "./ModalUsuario.scss";
 
 const userSchema = yup.object().shape({
   nome: yup.string().required('Nome é obrigatório'),
