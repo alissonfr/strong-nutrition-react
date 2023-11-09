@@ -1,16 +1,9 @@
 import { Fornecedor } from "../models/fornecedor";
 import { Api } from "./axios-config";
 
-export const findFornecedor = async (
-  page: number,
-  pageSize: number,
-  nomeFantasia: string,
-  cnpj: string
-) => {
+export const findFornecedor = async (page: number, pageSize: number, nomeFantasia: string, cnpj: string) => {
   try {
-    const response = await Api.get(
-      `/fornecedor?page=${page}&pageSize=${pageSize}&nomeFantasia=${nomeFantasia}&cnpj=${cnpj}`
-    );
+    const response = await Api.get(`/fornecedor?page=${page}&pageSize=${pageSize}&nomeFantasia=${nomeFantasia}&cnpj=${cnpj}`);
     return response.data;
   } catch (error) {
     throw error;
