@@ -1,12 +1,12 @@
 import { useEffect } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { useDrawerContext } from "../contexts";
 
-import HomeIcon from "@mui/icons-material/Home";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import CreateNewFolderIcon from "@mui/icons-material/CreateNewFolder";
-import { Caixa, Dashboard, Usuarios, Vendas } from "../pages";
+import HomeIcon from "@mui/icons-material/Home";
+import { Caixa, Dashboard, Produtos, Usuarios, Vendas } from "../pages";
 import { Fornecedores } from "../pages/cadastros/fornecedores/Fornecedores";
 
 export const AppRoutes = () => {
@@ -42,6 +42,10 @@ export const AppRoutes = () => {
             path: "/fornecedores",
             label: "Fornecedores",
           },
+          {
+            path: "/produtos",
+            label: "Produtos",
+          },
         ],
       },
     ]);
@@ -55,6 +59,7 @@ export const AppRoutes = () => {
 
       <Route path="/cadastros/usuarios" element={<Usuarios />} />
       <Route path="/cadastros/fornecedores" element={<Fornecedores />} />
+      <Route path="/cadastros/produtos" element={<Produtos />} />
 
       <Route path="*" element={<Navigate to="/dashboard" />} />
     </Routes>
