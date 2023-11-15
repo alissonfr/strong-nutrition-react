@@ -4,20 +4,21 @@ import { Dialog, DialogContent } from "@mui/material";
 import { useEffect, useState } from "react";
 import * as yup from "yup";
 import { useSnackbar } from "../../../../../contexts";
+import { Fornecedor } from "../../../../../models/fornecedor";
 import { Produto } from "../../../../../models/produto";
+import { findFornecedor } from "../../../../../services/fornecedor.service";
 import {
   createProduto,
   deleteProduto,
   updateProduto,
 } from "../../../../../services/produto.service";
-import { AutoComplete, Button, Input } from "../../../../../shared";
+import { Button, Input, Select } from "../../../../../shared";
 
 const produtoSchema = yup.object().shape({
   nome: yup.string().required("Nome é obrigatório"),
   descricao: yup.string().required("Descrição é obrigatório"),
   marca: yup.string().required("A marca é obrigatório"),
   preco: yup.string().required("O preço é obrigatório"),
-  fornecedor: yup.string().required("Fornecedor é obrigatório"),
 });
 
 interface ModalProdutoProps {
@@ -39,10 +40,13 @@ export const ModalProdutos: React.FC<ModalProdutoProps> = ({
     descricao: "",
     marca: "",
     preco: "",
-    fornecedor: {},
+    fornecedor: {
+      idFornecedor: 0
+    } as Fornecedor,
   };
 
   const [produtoData, setProdutoData] = useState<Produto>(initialState);
+  const [fornecedores, setFornecedor] = useState<Fornecedor[]>([]);
 
   const [errors, setErrors] = useState(initialState);
 
@@ -55,6 +59,24 @@ export const ModalProdutos: React.FC<ModalProdutoProps> = ({
     setErrors({
       ...errors,
       [name]: "",
+    });
+  };
+
+  const handleSelectChange = (e: any) => {
+    const { value } = e.target;
+    setProdutoData({
+      ...produtoData,
+      fornecedor: {
+        ...produtoData.fornecedor,
+        idFornecedor: Number(value),
+      },
+    });
+    setErrors({
+      ...errors,
+      fornecedor: {
+        ...produtoData.fornecedor,
+        idFornecedor: 0,
+      } as Fornecedor,
     });
   };
 
@@ -127,6 +149,16 @@ export const ModalProdutos: React.FC<ModalProdutoProps> = ({
       setProdutoData(selectedProduto)
     }
   }, [selectedProduto]);
+
+  useEffect(() => {
+    findFornecedor()
+      .then((data) => {
+        setFornecedor(data.content);
+      })
+      .catch((error) => {
+        showSnackbar(error.response.data.message, "error");
+      });
+  }, []);
 
   return (
     <Dialog
@@ -202,15 +234,15 @@ export const ModalProdutos: React.FC<ModalProdutoProps> = ({
 
         <div className="row">
           <div className="input">
-            <AutoComplete
+            <Select
               label="Fornecedor *"
-              placeholder="João Multimarcas"
-              value={produtoData.marca}
-              name="marca"
-              error={!!errors.marca}
-              helperText={errors.marca}
-              onKeyDown={handleInputChange}
-              onChange={handleInputChange}
+              value={produtoData.fornecedor.idFornecedor}
+              onChange={handleSelectChange}
+              options={fornecedores}
+              error={!!errors.fornecedor.idFornecedor}
+              helperText="Fornecedor é obrigatório"
+              optionLabel="nomeFantasia"
+              optionValue="idFornecedor"
             />
           </div>
         </div>
