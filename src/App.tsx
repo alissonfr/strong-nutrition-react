@@ -6,7 +6,6 @@ import { SnackbarProvider } from './contexts';
 import { AppRoutes } from './routes';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { ptBR } from '@mui/material/locale';
-import ProdutoIdProvider from './contexts/ProdutoIdContext';
 
 
 declare module '@mui/material/styles' {
@@ -41,18 +40,16 @@ function App() {
     <ThemeProvider theme={theme}>
       <SnackbarProvider>
       <AuthProvider>
-        <ProdutoIdProvider>
-          <Login>
-            <DrawerProvider>
-              <BrowserRouter>
-                <Navbar/>
-                <Sidenav>
-                  <AppRoutes/>
-                </Sidenav>
-              </BrowserRouter>
-            </DrawerProvider>
-          </Login>
-        </ProdutoIdProvider>
+        <Login>
+          <DrawerProvider>
+            <BrowserRouter>
+              <Navbar/>
+              <Sidenav>
+                <AppRoutes/>
+              </Sidenav>
+            </BrowserRouter>
+          </DrawerProvider>
+        </Login>
       </AuthProvider>
     </SnackbarProvider>
     </ThemeProvider>

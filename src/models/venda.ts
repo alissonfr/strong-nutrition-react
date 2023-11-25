@@ -1,12 +1,18 @@
 import { Produto } from "./produto";
 
+interface VendaProdutos {
+  quantidade: number;
+  produto: {
+    idProduto: number;
+    nome?: string;
+  }
+}
+
 export interface Venda {
     idVenda?: number;
-    cliente: string;
-    codigo: string;
-    dataDaVenda: string;
-    estadoDaVenda: string;
+    dataVenda: string;
+    status: string;
     observacao: string;
-    produto: Partial<Produto>;
+    vendaProdutos: VendaProdutos[];
   }
   

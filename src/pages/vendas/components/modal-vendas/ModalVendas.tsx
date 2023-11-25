@@ -1,26 +1,30 @@
-import * as yup from "yup";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import CloseIcon from "@mui/icons-material/Close";
 import { Dialog, DialogContent } from "@mui/material";
-import { useEffect, useState, useContext } from "react";
-import { Venda } from "../../../../models/venda";
-import { 
-  createVenda,
-  deleteVenda,
-  updateVenda, } from "../../../../services/venda.service";
-import { findProduto } from "../../../../services/produto.service";
+import { useEffect, useState } from "react";
+import * as yup from "yup";
 import { useSnackbar } from "../../../../contexts";
+import { Venda } from "../../../../models/venda";
+import { createVenda, deleteVenda, updateVenda } from "../../../../services/venda.service";
 import { Button, Input, Select } from "../../../../shared";
 import { Produto } from "../../../../models/produto";
-import { TableProdutos } from "../table-produtos/TableProdutos";
-import { ProdutoIdContext } from "../../../../contexts/ProdutoIdContext"; 
+import { findProduto } from "../../../../services/produto.service";
+
+import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 
 const vendaSchema = yup.object().shape({
-  cliente: yup.string().required("O cliente é obrigatório"),
-  codigo: yup.string().required("O codigo é obrigatório"),
-  estadoDaVenda: yup.string().required("O estado da venda é obrigatório"),
-  dataDaVenda: yup.string().required("A data da venda é obrigatório"),
+  dataVenda: yup.string().required("A data é obrigatório"),
+  observacao: yup.string().required("Observação é obrigatório"),
+  status: yup.string().required("Status é obrigatório"),
 });
+
+const statusVenda = [
+  { label: "Pendente", value: "pendente" },
+  { label: "Concluida", value: "concluida" },
+  { label: "Cancelada", value: "cancelada" },
+]
 
 interface ModalVendaProps {
   open: boolean;
@@ -28,28 +32,19 @@ interface ModalVendaProps {
   selectedVenda: Venda | null;
 }
 
-export const ModalVendas: React.FC<ModalVendaProps> = ({
-  open,
-  onClose,
-  selectedVenda,
-}) => {
+export const ModalVendas: React.FC<ModalVendaProps> = ({ open, onClose, selectedVenda }) => {
   const showSnackbar = useSnackbar();
 
   const initialState = {
     idVenda: 0,
-    cliente: "",
-    codigo: "",
-    dataDaVenda: "",
-    estadoDaVenda: "",
+    dataVenda: "",
+    status: "",
     observacao: "",
-    produto: {
-      idProduto: 0
-    } as Produto,
+    vendaProdutos: [] ,
   };
 
   const [vendaData, setVendaData] = useState<Venda>(initialState);
-  const [produtos, setProdutos] = useState<Produto[]>([]);
-  const { handleSetProdutoId } = useContext(ProdutoIdContext)
+  const [produtos, setProduto] = useState<Produto[]>([]);
 
   const [errors, setErrors] = useState(initialState);
 
@@ -67,22 +62,58 @@ export const ModalVendas: React.FC<ModalVendaProps> = ({
 
   const handleSelectChange = (e: any) => {
     const { value } = e.target;
-    handleSetProdutoId(Number(value));
+
+    if(!value) return;
+
+    const produtoExistente = vendaData.vendaProdutos.find((produto) => produto.produto.idProduto === value);
+
+    const selectedProduto = produtos.find((produto) => produto.idProduto === Number(value));
+
+    if(produtoExistente) {
+      e.target.value = "";
+      return showSnackbar("Esse produto já foi selecionado", "error");
+    }
+
     setVendaData({
       ...vendaData,
-      produto: {
-        ...vendaData.produto,
-        idProduto: Number(value),
-      },
+      vendaProdutos: [
+        ...vendaData.vendaProdutos,
+        { produto: { idProduto: value, nome: selectedProduto?.nome }, quantidade: 1 },
+      ],
     });
-    setErrors({
-      ...errors,
-      produto: {
-        ...vendaData.produto,
-        idProduto: 0,
-      } as Produto,
-    });
+
+    e.target.value = "";
   };
+
+  const handleDeleteProduto = (id: number) => {
+    const novosProdutos = vendaData.vendaProdutos.filter(
+      (produto) => produto.produto.idProduto !== id
+    );
+
+    setVendaData({
+      ...vendaData,
+      vendaProdutos: novosProdutos
+    });
+
+  }
+
+  const handleQuantidadeProduto = (id: number, quantidade: number) => {
+    if(quantidade <= 0) {
+      return handleDeleteProduto(id);
+    }
+
+    const novosProdutos = vendaData.vendaProdutos.map((produto) =>
+    produto.produto.idProduto === id
+      ? { ...produto, quantidade: quantidade }
+      : produto
+    );
+
+    setVendaData({
+      ...vendaData,
+      vendaProdutos: novosProdutos
+    });
+
+  }
 
   const handleSubmit = () => {
     vendaSchema
@@ -109,9 +140,9 @@ export const ModalVendas: React.FC<ModalVendaProps> = ({
     createVenda(venda)
       .then(() => {
         handleOnClose();
-        showSnackbar("Venda realizada com sucesso!", "success");
+        showSnackbar("Venda cadastrada com sucesso!", "success");
       })
-      .catch((error: any) => {
+      .catch((error) => {
         showSnackbar(error.response.data.message, "error");
       });
   };
@@ -120,12 +151,11 @@ export const ModalVendas: React.FC<ModalVendaProps> = ({
     if (!vendaData.idVenda) return;
 
     updateVenda(vendaData.idVenda, vendaData)
-
       .then(() => {
         handleOnClose();
         showSnackbar("Venda atualizada com sucesso!", "success");
       })
-      .catch((error: any) => {
+      .catch((error) => {
         showSnackbar(error.response.data.message, "error");
       });
   };
@@ -138,7 +168,7 @@ export const ModalVendas: React.FC<ModalVendaProps> = ({
         handleOnClose();
         showSnackbar("Venda apagada com sucesso!", "success");
       })
-      .catch((error: any) => {
+      .catch((error) => {
         showSnackbar(error.response.data.message, "error");
       });
   };
@@ -157,10 +187,10 @@ export const ModalVendas: React.FC<ModalVendaProps> = ({
 
   useEffect(() => {
     findProduto()
-    .then((data: any) => {
-        setProdutos(data.content);
+      .then((data) => {
+        setProduto(data.content);
       })
-      .catch((error: any) => {
+      .catch((error) => {
         showSnackbar(error.response.data.message, "error");
       });
   }, []);
@@ -185,81 +215,81 @@ export const ModalVendas: React.FC<ModalVendaProps> = ({
         <div className="row">
           <div className="input">
             <Input
-              label="Cliente *"
-              placeholder="Aroldo"
-              value={vendaData.cliente}
-              name="cliente"
-              error={!!errors.cliente}
-              helperText={errors.cliente}
+              label="Data da venda *"
+              placeholder="29/03/2003"
+              value={vendaData.dataVenda}
+              name="dataVenda"
+              error={!!errors.dataVenda}
+              helperText={errors.dataVenda}
               onKeyDown={handleInputChange}
               onChange={handleInputChange}
             />
           </div>
-
-          <div className="input" style={{ maxWidth: "32%" }}>
-            <Input
-              label="Codigo *"
-              placeholder="12345"
-              value={vendaData.codigo}
-              name="codigo"
-              error={!!errors.codigo}
-              helperText={errors.codigo}
-              onKeyDown={handleInputChange}
-              onChange={handleInputChange}
-            />
-          </div>
-        </div>
-
-        <div className="row">
-          <div className="input">
-            <Input
-              label="Estado da Venda *"
-              placeholder="Em andamento"
-              value={vendaData.estadoDaVenda}
-              name="estadoDaVenda"
-              error={!!errors.estadoDaVenda}
-              helperText={errors.estadoDaVenda}
-              onKeyDown={handleInputChange}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div className="input">
-            <Input
-              label="Data da Venda"
-              placeholder="__/__/__"
-              value={vendaData.dataDaVenda}
-              name="dataDaVenda"
-              onChange={handleInputChange}
-            />
-          </div>
-          
-          <div className="input">
-          <Input
-            label="Observação"
-            value={vendaData.observacao}
-            name="observacao"
-            onChange={handleInputChange}
-          />
-        </div>
-        </div>
-        <div className="row">
           <div className="input">
           <Select
+              label="Status *"
+              value={vendaData.status}
+              onChange={(e) => handleInputChange({ target: { name: "status", value: e.target.value } })}
+              options={statusVenda}
+              error={!!errors.status}
+              helperText={errors.status}
+              optionLabel="label"
+              optionValue="value"
+            />
+          </div>
+        </div>
+
+        <div className="row">
+        <div className="input">
+            <Input
+              label="Observação *"
+              placeholder="Cliente ficou devendo 2 reais"
+              value={vendaData.observacao}
+              name="observacao"
+              error={!!errors.observacao}
+              helperText={errors.observacao}
+              onKeyDown={handleInputChange}
+              onChange={handleInputChange}
+            />
+          </div>
+        </div>
+
+        <div className="row">
+          <div className="input">
+            <Select
               label="Produtos *"
-              value={vendaData.produto.idProduto}
               onChange={handleSelectChange}
               options={produtos}
-              error={!!errors.produto.idProduto}
-              helperText="Produto é obrigatório"
               optionLabel="nome"
               optionValue="idProduto"
             />
           </div>
         </div>
-        <div className="row" style={{left: 150, position: 'relative'  }}>
-        <div className="input">
-          <TableProdutos onRowClick={() => {}}/>
-          </div>
+
+        <div className="table-card" style={{ padding: 0, margin: 0, marginTop: "50px" }}>
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Quantidade</th>
+              </tr>
+            </thead>
+            <tbody>
+              {vendaData.vendaProdutos.map((vendaProduto, index) => (
+                <tr key={index}>
+                  <td>{vendaProduto.produto.idProduto}</td>
+                  <td>{vendaProduto.produto.nome}</td>
+                  <td style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                    <AddIcon style={{ cursor: "pointer" }} onClick={() => handleQuantidadeProduto(vendaProduto.produto.idProduto, vendaProduto.quantidade + 1)} />
+                    {vendaProduto.quantidade}
+                    <RemoveIcon style={{ cursor: "pointer" }} onClick={() => handleQuantidadeProduto(vendaProduto.produto.idProduto, vendaProduto.quantidade - 1)} />
+                    </td>
+                  <td><DeleteIcon style={{ cursor: "pointer" }} onClick={() => handleDeleteProduto(vendaProduto.produto.idProduto)} /></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </DialogContent>
 

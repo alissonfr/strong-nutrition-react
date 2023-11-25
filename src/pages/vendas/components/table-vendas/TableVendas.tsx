@@ -73,8 +73,8 @@ export const TableVendas: React.FC<TableVendaProps> = ({onRowClick}) => {
                 }}
               >
                 <td>{venda.idVenda}</td>
-                <td>{venda.cliente}</td>
-                <td>{venda.estadoDaVenda}</td>
+                <td>{venda.status}</td>
+                <td>{venda.observacao}</td>
               </tr>
             ))}
           </tbody>
