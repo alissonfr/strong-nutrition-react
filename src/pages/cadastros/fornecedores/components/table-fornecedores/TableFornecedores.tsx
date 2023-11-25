@@ -3,7 +3,6 @@ import { TablePagination } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useSnackbar } from "../../../../../contexts";
 import { Button, Input } from "../../../../../shared";
-import "./TableFornecedores.scss";
 
 import CleaningServicesIcon from "@mui/icons-material/CleaningServices";
 import SearchIcon from "@mui/icons-material/Search";
