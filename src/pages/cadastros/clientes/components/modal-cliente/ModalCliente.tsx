@@ -4,53 +4,49 @@ import { Dialog, DialogContent } from '@mui/material';
 import { useEffect, useState } from 'react';
 import * as yup from 'yup';
 import { useSnackbar } from "../../../../../contexts";
-import { User } from "../../../../../models/user";
-import { createUser, deleteUser, updateUser } from "../../../../../services/user.service";
+import { Cliente } from "../../../../../models/cliente";
+import { createCliente, deleteCliente, updateCliente } from "../../../../../services/cliente.service";
 import { Button, Input } from "../../../../../shared";
 
-const userSchema = yup.object().shape({
+const clienteSchema = yup.object().shape({
   nome: yup.string().required('Nome é obrigatório'),
   cpf: yup.string().required("CPF é obrigatório"),
   email: yup.string().email('Digite um endereço de email válido').required('O email é obrigatório'),
-  senha: yup.string().required('A senha é obrigatória').matches(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$/, "A senha deve conter letras maiúsculas, minúsculas números e caracteres especiais"),
-  dataNascimento: yup.date().nullable().transform((curr, orig) => orig === '' ? null : curr).required("Data de nascimento inválida"),
   telefone: yup.string().required('Telefone é obrigatório'),
 });
 
-interface ModalUsuarioProps {
+interface ModalClienteProps {
   open: boolean;
   onClose: () => void;
-  selectedUser: User | null;
+  selectedCliente: Cliente | null;
 }
 
-export const ModalUsuario: React.FC<ModalUsuarioProps> = ({ open, onClose, selectedUser }) => {
+export const ModalCliente: React.FC<ModalClienteProps> = ({ open, onClose, selectedCliente }) => {
   const showSnackbar = useSnackbar();
 
   const initialState = {
-    idUser: 0,
+    idCliente: 0,
     nome: "",
     cpf: "",
     email: "",
     telefone: "",
     cep: "",
-    bairro: "",
-    cidade: "",
     uf: "",
-    dataNascimento: "",
-    senha: "",
+    cidade: "",
+    bairro: "",
     rua: "",
     residencia: "",
     complemento: "",
   };
 
-  const [userData, setUserData] = useState<User>(initialState);
+  const [clienteData, setClienteData] = useState<Cliente>(initialState);
 
   const [errors, setErrors] = useState(initialState);
 
   const handleInputChange = (e: any) => {
     const { name, value } = e.target;
-    setUserData({
-      ...userData,
+    setClienteData({
+      ...clienteData,
       [name]: value,
     });
     setErrors({
@@ -60,13 +56,13 @@ export const ModalUsuario: React.FC<ModalUsuarioProps> = ({ open, onClose, selec
   };
 
   const handleSubmit = () => {
-    userSchema
-      .validate(userData, { abortEarly: false })
+    clienteSchema
+      .validate(clienteData, { abortEarly: false })
       .then((data: any) => {
-        if (userData.idUser && userData.idUser > 0) {
-          return handleUpdateUser()
+        if (clienteData.idCliente && clienteData.idCliente > 0) {
+          return handleUpdateCliente()
         }
-        return handleCreateUser()
+        return handleCreateCliente()
       })
       .catch((yupErrors) => {
         yupErrors.inner.forEach((error: any) => {
@@ -78,10 +74,10 @@ export const ModalUsuario: React.FC<ModalUsuarioProps> = ({ open, onClose, selec
       });
   };
 
-  const handleCreateUser = async () => {
-    const user = userData;
-    delete userData.idUser;
-    createUser(user)
+  const handleCreateCliente = async () => {
+    const cliente = clienteData;
+    delete clienteData.idCliente;
+    createCliente(cliente)
       .then(() => {
         handleOnClose()
         showSnackbar("Usuário cadastrado com sucesso!", 'success');
@@ -91,10 +87,10 @@ export const ModalUsuario: React.FC<ModalUsuarioProps> = ({ open, onClose, selec
       });
   };
 
-  const handleUpdateUser = async () => {
-    if (!userData.idUser) return
+  const handleUpdateCliente = async () => {
+    if (!clienteData.idCliente) return
 
-    updateUser(userData.idUser, userData)
+    updateCliente(clienteData.idCliente, clienteData)
       .then(() => {
         handleOnClose()
         showSnackbar("Usuário atualizado com sucesso!", 'success');
@@ -104,10 +100,10 @@ export const ModalUsuario: React.FC<ModalUsuarioProps> = ({ open, onClose, selec
       });
   };
 
-  const handleDeleteUser = async () => {
-    if (!userData.idUser) return
+  const handleDeleteCliente = async () => {
+    if (!clienteData.idCliente) return
 
-    deleteUser(userData.idUser)
+    deleteCliente(clienteData.idCliente)
       .then(() => {
         handleOnClose()
         showSnackbar("Usuário apagado com sucesso!", 'success');
@@ -118,24 +114,23 @@ export const ModalUsuario: React.FC<ModalUsuarioProps> = ({ open, onClose, selec
   };
 
   const handleOnClose = () => {
-    setUserData(initialState);
+    setClienteData(initialState);
     setErrors(initialState);
     onClose();
   }
 
   useEffect(() => {
-    if(selectedUser) {
-      delete selectedUser.senha;
-      setUserData(selectedUser)
+    if(selectedCliente) {
+      setClienteData(selectedCliente)
     }
-  }, [selectedUser]);
+  }, [selectedCliente]);
 
   return (
     <Dialog open={open} maxWidth={"md"} className="modal" PaperProps={{ sx: { width: "50%", maxHeight: 1000 } }}>
       <header className="dialog-header">
         <div className="dialog-title">
           <AssignmentIcon />
-          <h1>{selectedUser ? "Atualizar cliente" : "Novo cliente"}</h1>
+          <h1>{selectedCliente ? "Atualizar cliente" : "Novo cliente"}</h1>
         </div>
         <CloseIcon className="close-icon" onClick={handleOnClose} />
       </header>
@@ -144,8 +139,8 @@ export const ModalUsuario: React.FC<ModalUsuarioProps> = ({ open, onClose, selec
           <div className="input">
             <Input
               label="Nome *"
-              placeholder="Guilherme Novais"
-              value={userData.nome}
+              placeholder="Alisson Rodrigues"
+              value={clienteData.nome}
               name="nome"
               error={!!errors.nome}
               helperText={errors.nome}
@@ -157,8 +152,8 @@ export const ModalUsuario: React.FC<ModalUsuarioProps> = ({ open, onClose, selec
           <div className="input" style={{ maxWidth: "32%" }}>
             <Input
               label="CPF *"
-              placeholder="059.654.852-64"
-              value={userData.cpf}
+              placeholder="071.910.025-72"
+              value={clienteData.cpf}
               name="cpf"
               error={!!errors.cpf}
               helperText={errors.cpf}
@@ -173,9 +168,9 @@ export const ModalUsuario: React.FC<ModalUsuarioProps> = ({ open, onClose, selec
           <div className="input">
             <Input
               label="Email *"
-              placeholder="guilhermenovais@gmail.com"
+              placeholder="alissonrodrigues@gmail.com"
               type="email"
-              value={userData.email}
+              value={clienteData.email}
               name="email"
               error={!!errors.email}
               helperText={errors.email}
@@ -184,40 +179,10 @@ export const ModalUsuario: React.FC<ModalUsuarioProps> = ({ open, onClose, selec
             />
           </div>
           <div className="input" style={{ maxWidth: "32%" }}>
-            <Input
-              label="Senha *"
-              placeholder="********"
-              type="password"
-              value={userData.senha}
-              name="senha"
-              error={!!errors.senha}
-              helperText={errors.senha}
-              onKeyDown={handleInputChange}
-              onChange={handleInputChange}
-            />
-          </div>
-
-        </div>
-
-        <div className="row">
-          <div className="input">
-            <Input
-              label="Data de nascimento *"
-              type="date"
-              placeholder="29/03/2003"
-              value={userData.dataNascimento}
-              name="dataNascimento"
-              error={!!errors.dataNascimento}
-              helperText={errors.dataNascimento}
-              onKeyDown={handleInputChange}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div className="input">
-            <Input
+          <Input
               label="Telefone *"
               placeholder="77 99848-9212"
-              value={userData.telefone}
+              value={clienteData.telefone}
               name="telefone"
               error={!!errors.telefone}
               helperText={errors.telefone}
@@ -227,11 +192,14 @@ export const ModalUsuario: React.FC<ModalUsuarioProps> = ({ open, onClose, selec
             />
           </div>
 
+        </div>
+
+        <div className="row">
           <div className="input">
             <Input
               label="CEP"
-              placeholder="45665-965"
-              value={userData.cep}
+              placeholder="45005-138"
+              value={clienteData.cep}
               name="cep"
               onChange={handleInputChange}
               mask="99999-999"
@@ -243,8 +211,8 @@ export const ModalUsuario: React.FC<ModalUsuarioProps> = ({ open, onClose, selec
           <div className="input">
             <Input
               label="Endereço"
-              placeholder="Rua Arlindo Barros"
-              value={userData.rua}
+              placeholder="Rua Circular Sete"
+              value={clienteData.rua}
               name="rua"
               onChange={handleInputChange}
             />
@@ -252,8 +220,8 @@ export const ModalUsuario: React.FC<ModalUsuarioProps> = ({ open, onClose, selec
           <div className="input">
             <Input
               label="Número"
-              placeholder="23"
-              value={userData.residencia}
+              placeholder="28"
+              value={clienteData.residencia}
               name="residencia"
               onChange={handleInputChange}
             />
@@ -263,7 +231,7 @@ export const ModalUsuario: React.FC<ModalUsuarioProps> = ({ open, onClose, selec
             <Input
               label="Bairro"
               placeholder="Miro Cairo"
-              value={userData.bairro}
+              value={clienteData.bairro}
               name="bairro"
               onChange={handleInputChange}
             />
@@ -275,7 +243,7 @@ export const ModalUsuario: React.FC<ModalUsuarioProps> = ({ open, onClose, selec
             <Input
               label="Cidade"
               placeholder="Vitória da Conquista"
-              value={userData.cidade}
+              value={clienteData.cidade}
               name="cidade"
               onChange={handleInputChange}
             />
@@ -284,7 +252,7 @@ export const ModalUsuario: React.FC<ModalUsuarioProps> = ({ open, onClose, selec
             <Input
               label="UF"
               placeholder="BA"
-              value={userData.uf}
+              value={clienteData.uf}
               name="uf"
               onChange={handleInputChange}
             />
@@ -293,7 +261,7 @@ export const ModalUsuario: React.FC<ModalUsuarioProps> = ({ open, onClose, selec
       </DialogContent>
 
       <div className="modal-footer">
-        {selectedUser ? <Button color="cancel" size="normal" onClick={handleDeleteUser}>Apagar</Button> : <div></div>}
+        {selectedCliente ? <Button color="cancel" size="normal" onClick={handleDeleteCliente}>Apagar</Button> : <div></div>}
         <Button color="secondary" size="normal" onClick={handleSubmit}>Salvar</Button>
       </div>
     </Dialog>

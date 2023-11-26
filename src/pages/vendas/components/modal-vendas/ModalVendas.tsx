@@ -13,6 +13,9 @@ import { findProduto } from "../../../../services/produto.service";
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
+import { Cliente } from "../../../../models/cliente";
+import { findClientes } from "../../../../services/cliente.service";
+import { User } from "../../../../models/user";
 
 const vendaSchema = yup.object().shape({
   dataVenda: yup.string().required("A data é obrigatório"),
@@ -40,11 +43,19 @@ export const ModalVendas: React.FC<ModalVendaProps> = ({ open, onClose, selected
     dataVenda: "",
     status: "",
     observacao: "",
-    vendaProdutos: [] ,
+    vendaProdutos: [],
+    cliente: {
+      idCliente: 0
+    } as Cliente,
+    funcionario: {
+      idUser: 0
+    } as User,
   };
 
   const [vendaData, setVendaData] = useState<Venda>(initialState);
   const [produtos, setProduto] = useState<Produto[]>([]);
+  const [clientes, setClientes] = useState<Cliente[]>([]);
+  const [total, setTotal] = useState<number>(0.00)
 
   const [errors, setErrors] = useState(initialState);
 
@@ -62,17 +73,37 @@ export const ModalVendas: React.FC<ModalVendaProps> = ({ open, onClose, selected
 
   const handleSelectChange = (e: any) => {
     const { value } = e.target;
+    setVendaData({
+      ...vendaData,
+      cliente: {
+        ...vendaData.cliente,
+        idCliente: Number(value),
+      },
+    });
+    setErrors({
+      ...errors,
+      cliente: {
+        ...vendaData.cliente,
+        idCliente: 0,
+      } as Cliente,
+    });
+  };
+
+  const handleSelectProdutoChange = (e: any) => {
+    const { value } = e.target;
 
     if(!value) return;
 
-    const produtoExistente = vendaData.vendaProdutos.find((produto) => produto.produto.idProduto === value);
+    const produtoExistente = vendaData.vendaProdutos.find((produto) => produto.produto.idProduto == value);
 
-    const selectedProduto = produtos.find((produto) => produto.idProduto === Number(value));
+    const selectedProduto = produtos.find((produto) => produto.idProduto == value);
 
     if(produtoExistente) {
       e.target.value = "";
       return showSnackbar("Esse produto já foi selecionado", "error");
     }
+
+    handleTotal(Number(selectedProduto?.preco));
 
     setVendaData({
       ...vendaData,
@@ -84,6 +115,12 @@ export const ModalVendas: React.FC<ModalVendaProps> = ({ open, onClose, selected
 
     e.target.value = "";
   };
+
+  const handleTotal = (preco: number | undefined) => {
+    if(preco) {
+      setTotal(total + preco)
+    }
+  }
 
   const handleDeleteProduto = (id: number) => {
     const novosProdutos = vendaData.vendaProdutos.filter(
@@ -98,14 +135,24 @@ export const ModalVendas: React.FC<ModalVendaProps> = ({ open, onClose, selected
   }
 
   const handleQuantidadeProduto = (id: number, quantidade: number) => {
+    const selectedProduto = produtos.find((produto) => produto.idProduto === Number(id));
+
     if(quantidade <= 0) {
+      handleTotal(Number(selectedProduto?.preco) * -1);
       return handleDeleteProduto(id);
     }
 
-    const novosProdutos = vendaData.vendaProdutos.map((produto) =>
-    produto.produto.idProduto === id
-      ? { ...produto, quantidade: quantidade }
-      : produto
+    const novosProdutos = vendaData.vendaProdutos.map((vendaProduto) => {
+      if(quantidade < vendaProduto.quantidade && vendaProduto.produto.idProduto == id) {
+        handleTotal(Number(selectedProduto?.preco) * -1);
+      }
+      if(quantidade > vendaProduto.quantidade && vendaProduto.produto.idProduto == id) {
+        handleTotal(Number(selectedProduto?.preco))
+      }
+      return vendaProduto.produto.idProduto === id
+      ? { ...vendaProduto, quantidade: quantidade }
+      : vendaProduto
+    }
     );
 
     setVendaData({
@@ -137,6 +184,7 @@ export const ModalVendas: React.FC<ModalVendaProps> = ({ open, onClose, selected
   const handleCreateVenda = async () => {
     const venda = vendaData;
     delete vendaData.idVenda;
+    
     createVenda(venda)
       .then(() => {
         handleOnClose();
@@ -176,12 +224,19 @@ export const ModalVendas: React.FC<ModalVendaProps> = ({ open, onClose, selected
   const handleOnClose = () => {
     setVendaData(initialState);
     setErrors(initialState);
+    setTotal(0);
     onClose();
   };
 
   useEffect(() => {
     if(selectedVenda) {
-      setVendaData(selectedVenda)
+      setVendaData(selectedVenda);
+      selectedVenda.vendaProdutos.forEach((vendaProduto) => {
+        const produtoEncontrado = produtos.find((produto) => produto.idProduto === vendaProduto.produto.idProduto);
+        if (produtoEncontrado) {
+          setTotal((prevTotal) => prevTotal + (Number(produtoEncontrado.preco) * vendaProduto.quantidade));
+        }
+      });
     }
   }, [selectedVenda]);
 
@@ -189,6 +244,13 @@ export const ModalVendas: React.FC<ModalVendaProps> = ({ open, onClose, selected
     findProduto()
       .then((data) => {
         setProduto(data.content);
+      })
+      .catch((error) => {
+        showSnackbar(error.response.data.message, "error");
+      });
+    findClientes()
+      .then((data) => {
+        setClientes(data.content);
       })
       .catch((error) => {
         showSnackbar(error.response.data.message, "error");
@@ -219,6 +281,7 @@ export const ModalVendas: React.FC<ModalVendaProps> = ({ open, onClose, selected
               placeholder="29/03/2003"
               value={vendaData.dataVenda}
               name="dataVenda"
+              type="date"
               error={!!errors.dataVenda}
               helperText={errors.dataVenda}
               onKeyDown={handleInputChange}
@@ -240,10 +303,10 @@ export const ModalVendas: React.FC<ModalVendaProps> = ({ open, onClose, selected
         </div>
 
         <div className="row">
-        <div className="input">
+          <div className="input">
             <Input
               label="Observação *"
-              placeholder="Cliente ficou devendo 2 reais"
+              placeholder="Detalhes adicionais sobre o pedido"
               value={vendaData.observacao}
               name="observacao"
               error={!!errors.observacao}
@@ -252,13 +315,25 @@ export const ModalVendas: React.FC<ModalVendaProps> = ({ open, onClose, selected
               onChange={handleInputChange}
             />
           </div>
+          <div className="input">
+            <Select
+              label="Cliente *"
+              value={vendaData.cliente.idCliente}
+              onChange={handleSelectChange}
+              options={clientes}
+              error={!!errors.cliente.idCliente}
+              helperText="Cliente é obrigatório"
+              optionLabel="nome"
+              optionValue="idCliente"
+            />
+          </div>
         </div>
 
         <div className="row">
           <div className="input">
             <Select
               label="Produtos *"
-              onChange={handleSelectChange}
+              onChange={handleSelectProdutoChange}
               options={produtos}
               optionLabel="nome"
               optionValue="idProduto"
@@ -301,9 +376,10 @@ export const ModalVendas: React.FC<ModalVendaProps> = ({ open, onClose, selected
         ) : (
           <div></div>
         )}
-        <Button color="secondary" size="normal" onClick={handleSubmit}>
-          Salvar
-        </Button>
+        <div style={{ display: "flex", gap: "18px", alignItems: "center" }}>
+          <h3 style={{ fontSize: "16px" }}>Total: R$ {total.toFixed(2)}</h3>
+          <Button color="secondary" size="normal" onClick={handleSubmit}>Salvar</Button>
+        </div>
       </div>
     </Dialog>
   );

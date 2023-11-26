@@ -1,9 +1,9 @@
 import { Venda } from "../models/venda";
 import { Api } from "./axios-config";
 
-export const findVenda = async (page?: number, pageSize?: number) => {
+export const findVenda = async (page?: number, pageSize?: number, observacao?: string) => {
   try {
-    const response = await Api.get(`/venda?page=${page || ""}&pageSize=${pageSize || ""}`);
+    const response = await Api.get(`/venda?page=${page || ""}&pageSize=${pageSize || ""}&observacao=${observacao || ""}`);
     return response.data;
   } catch (error) {
     throw error;
@@ -12,6 +12,12 @@ export const findVenda = async (page?: number, pageSize?: number) => {
 
 export const createVenda = async (venda: Venda) => {
     try {
+
+      const user = localStorage.getItem("user");
+      if(user) {
+        venda.funcionario = JSON.parse(user);
+      }
+
       const response = await Api.post("/venda", venda);
       return response.data;
     } catch (error) {

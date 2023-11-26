@@ -2,9 +2,11 @@
 import { TablePagination } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useSnackbar } from "../../../../contexts";
-
+import CleaningServicesIcon from '@mui/icons-material/CleaningServices';
+import SearchIcon from '@mui/icons-material/Search';
 import { Venda } from "../../../../models/venda";
 import { findVenda } from "../../../../services/venda.service"; 
+import { Button, Input } from "../../../../shared";
 
 interface TableVendaProps {
   onRowClick: (venda: Venda) => void;
@@ -18,6 +20,10 @@ export const TableVendas: React.FC<TableVendaProps> = ({onRowClick}) => {
   const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);
 
+  const [search, setSearch] = useState({
+    observacao: ""
+  });
+
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
   };
@@ -27,11 +33,19 @@ export const TableVendas: React.FC<TableVendaProps> = ({onRowClick}) => {
     setPage(1);
   };
 
+  const handleCleanForm = async () => {
+    setSearch({
+        observacao: "",
+    });
+    await fetchData(page, pageSize, "");
+};
+
   const fetchData = async (
     page: number,
     pageSize: number,
+    observacao: string
   ) => {
-    findVenda(page, pageSize)
+    findVenda(page, pageSize, observacao)
       .then((data: any) => {
         setVenda(data.content);
         setTotal(data.total);
@@ -42,7 +56,7 @@ export const TableVendas: React.FC<TableVendaProps> = ({onRowClick}) => {
   };
 
   const handleSearch = async () => {
-    await fetchData(page, pageSize);
+    await fetchData(page, pageSize, search.observacao);
   };
 
   const handleRowClick = (venda: Venda) => {
@@ -56,12 +70,23 @@ export const TableVendas: React.FC<TableVendaProps> = ({onRowClick}) => {
   return (
     <>
       <div className="table-card">
+        <div className="search">
+          <Input
+              placeholder="Observação"
+              value={search.observacao}
+              onChange={e => setSearch({ ...search, observacao: e.target.value })}
+          />
+          <Button size="large" color="outlined" startIcon={CleaningServicesIcon} onClick={handleCleanForm}>Limpar</Button>
+          <Button size="large" startIcon={SearchIcon} onClick={handleSearch}>Pesquisar</Button>
+          </div>
         <table>
           <thead>
             <tr>
               <th>ID</th>
               <th>Cliente</th>
-              <th>Estado da venda</th>
+              <th>Funcionário</th>
+              <th>Observação</th>
+              <th>Status</th>
             </tr>
           </thead>
           <tbody>
@@ -73,8 +98,10 @@ export const TableVendas: React.FC<TableVendaProps> = ({onRowClick}) => {
                 }}
               >
                 <td>{venda.idVenda}</td>
-                <td>{venda.status}</td>
+                <td>{venda.cliente.nome}</td>
+                <td>{venda.funcionario.nome}</td>
                 <td>{venda.observacao}</td>
+                <td style={{ textTransform: "capitalize" }}>{venda.status}</td>
               </tr>
             ))}
           </tbody>

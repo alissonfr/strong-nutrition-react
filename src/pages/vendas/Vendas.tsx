@@ -21,7 +21,6 @@ export const Vendas: React.FC = () => {
   };
 
   const handleVendasSelect = (venda: Venda) => {
-    console.log(venda)
     handleOpen();
     setSelectedVenda(venda);
   };
