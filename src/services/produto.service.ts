@@ -1,9 +1,18 @@
 import { Produto } from "../models/produto";
 import { Api } from "./axios-config";
 
-export const findProduto = async (page: number, pageSize: number, nome: string, marca: string) => {
+export const findProduto = async (page?: number, pageSize?: number, nome?: string, marca?: string) => {
   try {
-    const response = await Api.get(`/produto?page=${page}&pageSize=${pageSize}&nome=${nome}&marca=${marca}`);
+    const response = await Api.get(`/produto?page=${page || ""}&pageSize=${pageSize || ""}&nome=${nome || ""}&marca=${marca || ""}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const findProdutoById = async (id: number) => {
+  try {
+    const response = await Api.get(`/produto/${id}`);
     return response.data;
   } catch (error) {
     throw error;

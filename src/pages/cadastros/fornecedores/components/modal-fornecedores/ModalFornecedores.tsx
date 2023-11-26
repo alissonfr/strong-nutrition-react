@@ -173,6 +173,7 @@ export const ModalFornecedores: React.FC<ModalFornecedorProps> = ({
               helperText={errors.cnpj}
               onKeyDown={handleInputChange}
               onChange={handleInputChange}
+              mask="99.999.999/9999-99"
             />
           </div>
         </div>
@@ -200,6 +201,7 @@ export const ModalFornecedores: React.FC<ModalFornecedorProps> = ({
               helperText={errors.telefone}
               onKeyDown={handleInputChange}
               onChange={handleInputChange}
+              mask="99 99999-9999"
             />
           </div>
         </div>
@@ -250,6 +252,7 @@ export const ModalFornecedores: React.FC<ModalFornecedorProps> = ({
               value={fornecedorData.cep}
               name="cep"
               onChange={handleInputChange}
+              mask="99999-999"
             />
           </div>
         </div>

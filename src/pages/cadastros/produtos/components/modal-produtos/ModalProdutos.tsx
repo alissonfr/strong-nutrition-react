@@ -228,6 +228,7 @@ export const ModalProdutos: React.FC<ModalProdutoProps> = ({
               helperText={errors.preco}
               onKeyDown={handleInputChange}
               onChange={handleInputChange}
+              mask="99.99"
             />
           </div>
         </div>

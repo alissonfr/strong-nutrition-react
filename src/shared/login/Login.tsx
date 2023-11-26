@@ -6,7 +6,7 @@ import LogoDark from './../../assets/logo-dark.png'
 import { Input } from '../input/Input';
 import { Button } from '../button/Button';
 import LoginIcon from '@mui/icons-material/Login';
-
+import { redirect } from "react-router-dom";
 
 const loginSchema = yup.object().shape({
   email: yup.string().email('Digite um endereço de email válido').required('O email é obrigatório'),
@@ -46,6 +46,7 @@ export const Login: React.FC<LoginProps> = ({ children }) => {
       .validate(formValues, { abortEarly: false })
       .then((data) => {
         login(data.email, data.password);
+        return redirect("/dashboard");
       })
       .catch((yupErrors) => {
         yupErrors.inner.forEach((error: any) => {
