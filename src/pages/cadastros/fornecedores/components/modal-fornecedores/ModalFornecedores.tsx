@@ -222,6 +222,7 @@ export const ModalFornecedores: React.FC<ModalFornecedorProps> = ({
               value={fornecedorData.uf}
               name="uf"
               onChange={handleInputChange}
+              mask="aa"
             />
           </div>
         </div>

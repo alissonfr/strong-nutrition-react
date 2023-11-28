@@ -108,6 +108,7 @@ export const TableProdutos: React.FC<TableUsuarioProps> = ({onRowClick}) => {
               <th>Nome</th>
               <th>Marca</th>
               <th>Preço</th>
+              <th>Fornecedor</th>
             </tr>
           </thead>
           <tbody>
@@ -118,10 +119,11 @@ export const TableProdutos: React.FC<TableUsuarioProps> = ({onRowClick}) => {
                   handleRowClick(produto);
                 }}
               >
-                <td>{produto.idProduto}</td>
-                <td>{produto.nome}</td>
-                <td>{produto.marca}</td>
-                <td>R$ {produto.preco}</td>
+                <td>{produto.idProduto ? produto.idProduto : "Não informado"}</td>
+                <td>{produto.nome ? produto.nome : "Não informado"}</td>
+                <td>{produto.marca ? produto.marca : "Não informado"}</td>
+                <td>{produto.preco ? "R$ " + produto.preco : "Não informado"}</td>
+                <td>{produto.fornecedor.nomeFantasia ? produto.fornecedor.nomeFantasia : "Não informado"}</td>
               </tr>
             ))}
           </tbody>

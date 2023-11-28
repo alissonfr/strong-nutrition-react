@@ -96,10 +96,10 @@ export const TableUsuario: React.FC<TableUsuarioProps> = ({ onRowClick }) => {
                     <tbody>
                         {users.map((user) => (
                             <tr key={user.idUser} onClick={() => { handleRowClick(user) }}>
-                                <td>{user.idUser}</td>
-                                <td>{user.nome}</td>
-                                <td>{user.email}</td>
-                                <td>{user.cpf}</td>
+                                <td>{user.idUser ? user.idUser : "Não informado"}</td>
+                                <td>{user.nome ? user.nome : "Não informado"}</td>
+                                <td>{user.email ? user.email : "Não informado"}</td>
+                                <td>{user.cpf ? user.cpf : "Não informado"}</td>
                             </tr>
                         ))}
                     </tbody>

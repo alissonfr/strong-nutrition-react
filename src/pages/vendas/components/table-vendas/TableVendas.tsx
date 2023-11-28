@@ -97,11 +97,11 @@ export const TableVendas: React.FC<TableVendaProps> = ({onRowClick}) => {
                   handleRowClick(venda);
                 }}
               >
-                <td>{venda.idVenda}</td>
-                <td>{venda.cliente.nome}</td>
-                <td>{venda.funcionario.nome}</td>
-                <td>{venda.observacao}</td>
-                <td style={{ textTransform: "capitalize" }}>{venda.status}</td>
+                <td>{venda.idVenda ? venda.idVenda : "Não informado"}</td>
+                <td>{venda.cliente.nome ? venda.cliente.nome : "Não informado"}</td>
+                <td>{venda.funcionario.nome ? venda.funcionario.nome : "Não informado"}</td>
+                <td>{venda.observacao ? venda.observacao : "Não informado"}</td>
+                <td style={{ textTransform: "capitalize" }}>{venda.status ? venda.status : "Não informado"}</td>
               </tr>
             ))}
           </tbody>

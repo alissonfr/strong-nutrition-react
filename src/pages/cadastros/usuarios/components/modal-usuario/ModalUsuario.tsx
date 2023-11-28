@@ -287,6 +287,7 @@ export const ModalUsuario: React.FC<ModalUsuarioProps> = ({ open, onClose, selec
               value={userData.uf}
               name="uf"
               onChange={handleInputChange}
+              mask="aa"
             />
           </div>
         </div>

@@ -55,7 +55,9 @@ export const ModalVendas: React.FC<ModalVendaProps> = ({ open, onClose, selected
   const [vendaData, setVendaData] = useState<Venda>(initialState);
   const [produtos, setProduto] = useState<Produto[]>([]);
   const [clientes, setClientes] = useState<Cliente[]>([]);
-  const [total, setTotal] = useState<number>(0.00)
+  const [total, setTotal] = useState<number>(0.00);
+  const [clienteError, setClienteError] = useState<boolean>(false);
+  const [produtosError, setProdutosError] = useState<boolean>(false);
 
   const [errors, setErrors] = useState(initialState);
 
@@ -80,13 +82,7 @@ export const ModalVendas: React.FC<ModalVendaProps> = ({ open, onClose, selected
         idCliente: Number(value),
       },
     });
-    setErrors({
-      ...errors,
-      cliente: {
-        ...vendaData.cliente,
-        idCliente: 0,
-      } as Cliente,
-    });
+    setClienteError(false);
   };
 
   const handleSelectProdutoChange = (e: any) => {
@@ -114,6 +110,8 @@ export const ModalVendas: React.FC<ModalVendaProps> = ({ open, onClose, selected
     });
 
     e.target.value = "";
+
+    setProdutosError(false);
   };
 
   const handleTotal = (preco: number | undefined) => {
@@ -163,9 +161,16 @@ export const ModalVendas: React.FC<ModalVendaProps> = ({ open, onClose, selected
   }
 
   const handleSubmit = () => {
+    if (!vendaData.cliente.idCliente) {
+      setClienteError(true);
+    }
+    if (vendaData.vendaProdutos && vendaData.vendaProdutos.length <= 0) {
+      setProdutosError(true);
+    }
     vendaSchema
       .validate(vendaData, { abortEarly: false })
       .then((data: any) => {
+        if(clienteError || produtosError) return
         if (vendaData.idVenda && vendaData.idVenda > 0) {
           return handleUpdateVenda();
         }
@@ -224,6 +229,8 @@ export const ModalVendas: React.FC<ModalVendaProps> = ({ open, onClose, selected
   const handleOnClose = () => {
     setVendaData(initialState);
     setErrors(initialState);
+    setClienteError(false);
+    setProdutosError(false);
     setTotal(0);
     onClose();
   };
@@ -321,7 +328,7 @@ export const ModalVendas: React.FC<ModalVendaProps> = ({ open, onClose, selected
               value={vendaData.cliente.idCliente}
               onChange={handleSelectChange}
               options={clientes}
-              error={!!errors.cliente.idCliente}
+              error={clienteError}
               helperText="Cliente é obrigatório"
               optionLabel="nome"
               optionValue="idCliente"
@@ -334,9 +341,12 @@ export const ModalVendas: React.FC<ModalVendaProps> = ({ open, onClose, selected
             <Select
               label="Produtos *"
               onChange={handleSelectProdutoChange}
+              value=""
               options={produtos}
               optionLabel="nome"
               optionValue="idProduto"
+              error={produtosError}
+              helperText="A escolha de pelo menos um produto é obrigatória"
             />
           </div>
         </div>

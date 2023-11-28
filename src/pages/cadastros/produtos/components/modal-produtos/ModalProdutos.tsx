@@ -47,6 +47,7 @@ export const ModalProdutos: React.FC<ModalProdutoProps> = ({
 
   const [produtoData, setProdutoData] = useState<Produto>(initialState);
   const [fornecedores, setFornecedor] = useState<Fornecedor[]>([]);
+  const [fornecedorError, setFornecedorError] = useState<boolean>(false);
 
   const [errors, setErrors] = useState(initialState);
 
@@ -71,19 +72,18 @@ export const ModalProdutos: React.FC<ModalProdutoProps> = ({
         idFornecedor: Number(value),
       },
     });
-    setErrors({
-      ...errors,
-      fornecedor: {
-        ...produtoData.fornecedor,
-        idFornecedor: 0,
-      } as Fornecedor,
-    });
+
+    setFornecedorError(false);
   };
 
   const handleSubmit = () => {
+    if (!produtoData.fornecedor.idFornecedor) {
+      setFornecedorError(true);
+    }
     produtoSchema
-      .validate(produtoData, { abortEarly: false })
-      .then((data: any) => {
+    .validate(produtoData, { abortEarly: false })
+    .then((data: any) => {
+        if(fornecedorError) return
         if (produtoData.idProduto && produtoData.idProduto > 0) {
           return handleUpdateProduto();
         }
@@ -141,6 +141,7 @@ export const ModalProdutos: React.FC<ModalProdutoProps> = ({
   const handleOnClose = () => {
     setProdutoData(initialState);
     setErrors(initialState);
+    setFornecedorError(false);
     onClose();
   };
 
@@ -240,7 +241,7 @@ export const ModalProdutos: React.FC<ModalProdutoProps> = ({
               value={produtoData.fornecedor.idFornecedor}
               onChange={handleSelectChange}
               options={fornecedores}
-              error={!!errors.fornecedor.idFornecedor}
+              error={fornecedorError}
               helperText="Fornecedor é obrigatório"
               optionLabel="nomeFantasia"
               optionValue="idFornecedor"

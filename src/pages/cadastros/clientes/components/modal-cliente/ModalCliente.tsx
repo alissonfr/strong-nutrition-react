@@ -255,6 +255,7 @@ export const ModalCliente: React.FC<ModalClienteProps> = ({ open, onClose, selec
               value={clienteData.uf}
               name="uf"
               onChange={handleInputChange}
+              mask="aa"
             />
           </div>
         </div>

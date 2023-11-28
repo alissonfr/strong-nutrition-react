@@ -118,10 +118,10 @@ export const TableFornecedores: React.FC<TableUsuarioProps> = ({onRowClick}) => 
                   handleRowClick(fornecedor);
                 }}
               >
-                <td>{fornecedor.idFornecedor}</td>
-                <td>{fornecedor.nomeFantasia}</td>
-                <td>{fornecedor.razaoSocial}</td>
-                <td>{fornecedor.cnpj}</td>
+                <td>{fornecedor.idFornecedor ? fornecedor.idFornecedor : "Nâo informado"}</td>
+                <td>{fornecedor.nomeFantasia ? fornecedor.nomeFantasia : "Nâo informado"}</td>
+                <td>{fornecedor.razaoSocial ? fornecedor.razaoSocial : "Nâo informado"}</td>
+                <td>{fornecedor.cnpj ? fornecedor.cnpj : "Nâo informado"}</td>
               </tr>
             ))}
           </tbody>

@@ -96,10 +96,10 @@ export const TableCliente: React.FC<TableClienteProps> = ({ onRowClick }) => {
                     <tbody>
                         {clientes.map((cliente) => (
                             <tr key={cliente.idCliente} onClick={() => { handleRowClick(cliente) }}>
-                                <td>{cliente.idCliente}</td>
-                                <td>{cliente.nome}</td>
-                                <td>{cliente.email}</td>
-                                <td>{cliente.cpf}</td>
+                                <td>{cliente.idCliente ? cliente.idCliente : "Não informado"}</td>
+                                <td>{cliente.nome ? cliente.nome : "Não informado"}</td>
+                                <td>{cliente.email ? cliente.email : "Não informado"}</td>
+                                <td>{cliente.cpf ? cliente.cpf : "Não informado"}</td>
                             </tr>
                         ))}
                     </tbody>
