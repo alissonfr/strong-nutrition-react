@@ -127,15 +127,20 @@ export const ModalProdutos: React.FC<ModalProdutoProps> = ({
 
   const handleDeleteProduto = async () => {
     if (!produtoData.idProduto) return;
-
-    deleteProduto(produtoData.idProduto)
-      .then(() => {
-        handleOnClose();
-        showSnackbar("Produto apagado com sucesso!", "success");
-      })
-      .catch((error) => {
+  
+    try {
+      await deleteProduto(produtoData.idProduto);
+      handleOnClose();
+      showSnackbar("Produto apagado com sucesso!", "success");
+    } catch (error: any) {
+      if (error.response && error.response.status === 404) {
+        // Produto não encontrado
         showSnackbar(error.response.data.message, "error");
-      });
+      } else {
+        // Outros erros
+        showSnackbar("Erro ao apagar o produto", "error");
+      }
+    }
   };
 
   const handleOnClose = () => {
