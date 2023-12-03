@@ -16,16 +16,6 @@ export const AppRoutes = () => {
   useEffect(() => {
     setDrawerOptions([
       {
-        icon: HomeIcon,
-        path: "/dashboard",
-        label: "Página inicial",
-      },
-      {
-        icon: AttachMoneyIcon,
-        path: "/caixa",
-        label: "Caixa",
-      },
-      {
         icon: BarChartIcon,
         path: "/vendas",
         label: "Vendas",

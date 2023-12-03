@@ -46,7 +46,7 @@ export const Login: React.FC<LoginProps> = ({ children }) => {
       .validate(formValues, { abortEarly: false })
       .then((data) => {
         login(data.email, data.password);
-        return redirect("/dashboard");
+        return redirect("/vendas");
       })
       .catch((yupErrors) => {
         yupErrors.inner.forEach((error: any) => {
